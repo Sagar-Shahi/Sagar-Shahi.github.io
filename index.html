@@ -532,6 +532,14 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
 }
 </style>
 
+<div class="boot" id="boot" role="presentation">
+  <div class="boot-in">
+    <div class="reactor" aria-hidden="true"><i class="r1"></i><i class="r2"></i><i class="r3"></i></div>
+    <div class="boot-log mono" id="boot-log" aria-hidden="true"></div>
+    <div class="boot-bar" aria-hidden="true"><i id="boot-fill"></i></div>
+    <span class="boot-skip mono">Tap to skip</span>
+  </div>
+</div>
 <div class="fxbg" aria-hidden="true"></div>
 </head>
 <body>
@@ -837,9 +845,9 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
   }
   if (bootEl && !RM && !booted) {
     root.classList.add('booting');
-    var lines = ['Initialising systems', 'Loading portfolio data', 'Calibrating interface', 'Sagar Shahi online'];
+    var lines = ['Initialising', 'Sagar Shahi online'];
     var logEl = document.getElementById('boot-log'), fill = document.getElementById('boot-fill'), li = 0;
-    var t0 = performance.now(), total = 2000;
+    var t0 = performance.now(), total = 1100;
     (function addLine() {
       if (bootDone) return;
       if (li < lines.length) {
@@ -853,7 +861,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
       if (k < 1) requestAnimationFrame(prog); else setTimeout(finishBoot, 250);
     })(t0);
     bootEl.addEventListener('click', finishBoot);
-    setTimeout(finishBoot, 4000);
+    setTimeout(finishBoot, 2200);
   } else {
     if (bootEl && bootEl.parentNode) bootEl.parentNode.removeChild(bootEl);
     bootDone = true;
