@@ -3,3 +3,10 @@ Thumbs.db
 .idea/
 .vscode/
 *.log
+
+# Secrets and local configuration: never commit these
+.env
+.env.*
+!.env.example
+*.pem
+*.key
