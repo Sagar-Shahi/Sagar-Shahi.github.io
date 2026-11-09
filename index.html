@@ -1070,12 +1070,32 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
 
   /* reveal on scroll */
   /* ash puff when a block appears on scroll */
-  var dcv = document.getElementById('dust'), dctx = dcv && dcv.getContext('2d'), specks = [], dRun = false;
+  var dcv = document.getElementById('dust'), dctx = dcv && dcv.getContext('2d'), fields = [], dRun = false;
   function puff(el) {
     if (!dctx || RM) return; var r = el.getBoundingClientRect(); if (r.width < 40 || r.height < 12) return;
-    var n = Math.min(150, Math.round(r.width * r.height / 1400) + 30);
-    for (var i = 0; i < n; i++) specks.push({ x: r.left + Math.random() * r.width, y: r.top + Math.random() * Math.min(r.height, 260), vx: -(15 + Math.random() * 45), vy: -(8 + Math.random() * 30), l: -Math.random() * 1.2, m: 1.6 + Math.random() * 1.6, s: 1 + Math.random() * 2 });
-    if (!dRun) { dRun = true; dcv.width = innerWidth; dcv.height = innerHeight; var tp = performance.now(); (function f(t) { var dt = Math.min((t - tp) / 1000, 0.05); tp = t; dctx.clearRect(0, 0, dcv.width, dcv.height); specks = specks.filter(function (k) { k.l += dt; if (k.l > k.m) return false; k.x += k.vx * dt; k.y += k.vy * dt; if (k.l < 0) return true; var a = 1 - k.l / k.m; dctx.fillStyle = 'rgba(210,190,255,' + (0.7 * a) + ')'; dctx.fillRect(k.x, k.y, k.s, k.s); return true; }); if (specks.length) requestAnimationFrame(f); else { dRun = false; dctx.clearRect(0, 0, dcv.width, dcv.height); } })(tp); }
+    var cw = 11, ch = 16, cols = Math.max(1, Math.floor(r.width / cw)), rows = Math.max(1, Math.min(Math.floor(r.height / ch), Math.floor(innerHeight / ch)));
+    if (cols * rows > 900) { cw = Math.ceil(r.width / 30); ch = cw * 1.4; cols = Math.floor(r.width / cw); rows = Math.min(Math.floor(r.height / ch), Math.floor(innerHeight / ch)); }
+    var cells = [];
+    for (var i = 0; i < cols * rows; i++) { var cx = i % cols, cy = (i / cols) | 0; cells.push({ x: cx * cw, y: cy * ch, d: (cx / cols) * 1.1 + Math.random() * 0.9, b: Math.random() < 0.5 ? '0' : '1', f: Math.random() * 0.25 }); }
+    fields.push({ el: el, cells: cells, cw: cw, ch: ch, t: 0, m: 2.9 });
+    if (!dRun) { dRun = true; dcv.width = innerWidth; dcv.height = innerHeight; var tp = performance.now();
+      (function f(t) {
+        var dt = Math.min((t - tp) / 1000, 0.05); tp = t; dctx.clearRect(0, 0, dcv.width, dcv.height);
+        fields = fields.filter(function (fd) {
+          fd.t += dt; if (fd.t > fd.m) return false;
+          var rr = fd.el.getBoundingClientRect(); dctx.font = (fd.ch * 0.8) + 'px monospace'; dctx.textBaseline = 'top';
+          fd.cells.forEach(function (c) {
+            var u = fd.t - c.d * 0.8; if (u < 0) return; var life = 1.0; if (u > life) return;
+            if (Math.random() < 0.08) c.b = c.b === '0' ? '1' : '0';
+            var a = u < 0.18 ? u / 0.18 : 1 - (u - 0.18) / (life - 0.18);
+            var hot = u < 0.3; dctx.fillStyle = hot ? 'rgba(120,235,255,' + (0.95 * a) + ')' : 'rgba(170,120,255,' + (0.8 * a) + ')';
+            var yy = rr.top + c.y - (u * 14); if (yy < -20 || yy > innerHeight) return;
+            dctx.fillText(c.b, rr.left + c.x - u * 10, yy);
+          });
+          return true;
+        });
+        if (fields.length) requestAnimationFrame(f); else { dRun = false; dctx.clearRect(0, 0, dcv.width, dcv.height); }
+      })(tp); }
   }
   /* mystical code rain behind everything */
   (function rain() {
