@@ -565,6 +565,28 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
 }
 @media (max-width: 560px) { .term-body { font-size: 12.6px; padding: 14px; min-height: 0; } .tech-grid { grid-template-columns: 1fr; } }
 
+
+/* ===== code editor + typed headings ===== */
+.term.code .term-bar .lang { margin-left: auto; color: var(--hud); }
+.term.code .term-body { padding: 16px 18px 18px 0; font-size: 14px; line-height: 1.75; min-height: 0; }
+.cl { display: flex; gap: 14px; }
+.cl .no { flex: none; width: 42px; text-align: right; color: #4a5170; user-select: none; }
+.cl .tx { white-space: pre-wrap; overflow-wrap: anywhere; color: #d7dbee; }
+.cl.res .tx { color: #6ee7a0; }
+.cl .k { color: #f29a3f; } .cl .c { color: #4fd8ff; } .cl .f { color: #c792ea; } .cl .s { color: #a8e6a1; } .cl .a { color: #9fc5ff; } .cl .pr { color: #4fd8ff; }
+.cur { display: inline-block; width: 8px; height: 1.05em; background: var(--hud); vertical-align: -0.15em; animation: caret 1s steps(1) infinite; }
+@media (max-width: 560px) { .term.code .term-body { font-size: 11.6px; padding-right: 12px; } .cl { gap: 8px; } .cl .no { width: 26px; } }
+@media (prefers-reduced-motion: no-preference) {
+  .fx .term.code .cl { opacity: 0; }
+  .fx .term.code.run .cl { animation: lnin 0.01s linear forwards; animation-delay: var(--t, 0s); }
+  .fx .term.code .cl .tx { clip-path: inset(0 100% 0 0); }
+  .fx .term.code.run .cl .tx { animation: typecmd var(--d, 0.5s) steps(var(--n, 10)) forwards; animation-delay: var(--t, 0s); }
+  .fx .typed { clip-path: inset(0 100% 0 0); }
+  .fx .chap-head.in .typed { animation: typecmd var(--d, 0.6s) steps(var(--n, 10)) forwards; animation-delay: var(--dl, 0.2s); }
+  .fx .chap-head.in h2.typed { clip-path: inset(0 100% 0 0); transition: none; }
+  .fx .chap-head .eyebrow.typed::before { content: "// "; }
+}
+
 /* reticle cursor (fine pointers only) */
 .reticle { position: fixed; left: 0; top: 0; z-index: 90; width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 1px solid var(--hud); border-radius: 50%; pointer-events: none; opacity: 0; transition: opacity 0.3s, width 0.25s var(--ease), height 0.25s var(--ease), margin 0.25s var(--ease), border-color 0.25s; will-change: transform; }
 .reticle::before { content: ""; position: absolute; left: 50%; top: 50%; width: 4px; height: 4px; margin: -2px 0 0 -2px; border-radius: 50%; background: var(--hud); }
@@ -646,27 +668,10 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
   <section class="chap" id="about" aria-labelledby="about-h">
     <div class="chap-head reveal">
       <span class="eyebrow">Profile</span>
-      <h2 id="about-h">System <span class="em">profile</span></h2>
-      <p class="chap-sub">Who I am, what I work with and what I am studying.</p>
+      <h2 id="about-h">Written in <span class="em">code</span></h2>
+      <p class="chap-sub">Who I am, what I work with and what I am studying, as a Python class.</p>
     </div>
-    <div class="term reveal" id="term" role="img" aria-label="Terminal window listing: Sagar Shahi, computer engineering student in Kathmandu; stack Python, Django, Java, C++, CSS and web development; studying DBMS, COA and operating systems; languages Nepali, English and Hindi; OJT in Python with Django for two years at Shivapuri Secondary College; open to internships, jobs and freelance work.">
-      <div class="term-bar"><i></i><i></i><i></i><span class="mono">sagar@kathmandu: ~</span></div>
-      <div class="term-body mono" aria-hidden="true">
-        <div class="ln" style="--t:.2s"><span class="pr">$</span> <span class="cmd" style="--n:6">whoami</span></div>
-        <div class="ln out" style="--t:.9s">Sagar Shahi, computer engineering student, Kathmandu, Nepal</div>
-        <div class="ln" style="--t:1.5s"><span class="pr">$</span> <span class="cmd" style="--n:9">cat stack</span></div>
-        <div class="ln out" style="--t:2.2s">Python &middot; Django &middot; Java &middot; C++ &middot; CSS &middot; Web development</div>
-        <div class="ln" style="--t:2.8s"><span class="pr">$</span> <span class="cmd" style="--n:12">cat studying</span></div>
-        <div class="ln out" style="--t:3.5s">DBMS &middot; COA &middot; Operating systems &middot; Java &middot; C++</div>
-        <div class="ln" style="--t:4.1s"><span class="pr">$</span> <span class="cmd" style="--n:12">cat training</span></div>
-        <div class="ln out" style="--t:4.8s">OJT, Python with Django, 2 years &middot; Shivapuri Secondary College, Maharajgunj</div>
-        <div class="ln" style="--t:5.4s"><span class="pr">$</span> <span class="cmd" style="--n:13">cat languages</span></div>
-        <div class="ln out" style="--t:6.1s">Nepali (native) &middot; English (conversational) &middot; Hindi (writes well, speaks basic)</div>
-        <div class="ln" style="--t:6.7s"><span class="pr">$</span> <span class="cmd" style="--n:6">status</span></div>
-        <div class="ln out ok" style="--t:7.4s">Open to internships, jobs and freelance work</div>
-        <div class="ln" style="--t:8s"><span class="pr">$</span> <span class="caret"></span></div>
-      </div>
-    </div>
+    <div class="term code reveal" id="term" role="img" aria-label="Code editor showing a Python class named Developer: name Sagar Shahi, location Kathmandu Nepal, role computer engineering student, stack Python, Django, Java, C++ and CSS, studying DBMS, COA and operating systems, training OJT in Python with Django for 2 years at Shivapuri Secondary College in Maharajgunj, languages Nepali native, English conversational and Hindi writes well and speaks basic, open to internships, jobs and freelance work."><div class="term-bar"><i></i><i></i><i></i><span class="mono">developer.py</span><span class="mono lang">Python</span></div><div class="term-body mono" aria-hidden="true"><div class="cl" style="--t:0.20s;--d:0.21s;--n:16"><span class="no">1</span><span class="tx"><span class="k">class</span> <span class="c">Developer</span>:</span></div><div class="cl" style="--t:0.48s;--d:0.31s;--n:24"><span class="no">2</span><span class="tx">    <span class="a">name</span> = <span class="s">&quot;Sagar Shahi&quot;</span></span></div><div class="cl" style="--t:0.86s;--d:0.43s;--n:33"><span class="no">3</span><span class="tx">    <span class="a">location</span> = <span class="s">&quot;Kathmandu, Nepal&quot;</span></span></div><div class="cl" style="--t:1.36s;--d:0.53s;--n:41"><span class="no">4</span><span class="tx">    <span class="a">role</span> = <span class="s">&quot;Computer engineering student&quot;</span></span></div><div class="cl" style="--t:1.96s;--d:0.70s;--n:54"><span class="no">5</span><span class="tx">    <span class="a">stack</span> = [<span class="s">&quot;Python&quot;</span>, <span class="s">&quot;Django&quot;</span>, <span class="s">&quot;Java&quot;</span>, <span class="s">&quot;C++&quot;</span>, <span class="s">&quot;CSS&quot;</span>]</span></div><div class="cl" style="--t:2.73s;--d:0.66s;--n:51"><span class="no">6</span><span class="tx">    <span class="a">studying</span> = [<span class="s">&quot;DBMS&quot;</span>, <span class="s">&quot;COA&quot;</span>, <span class="s">&quot;Operating systems&quot;</span>]</span></div><div class="cl" style="--t:3.47s;--d:0.64s;--n:49"><span class="no">7</span><span class="tx">    <span class="a">training</span> = <span class="s">&quot;OJT, Python with Django, 2 years&quot;</span></span></div><div class="cl" style="--t:4.17s;--d:0.73s;--n:56"><span class="no">8</span><span class="tx">    <span class="a">college</span> = <span class="s">&quot;Shivapuri Secondary College, Maharajgunj&quot;</span></span></div><div class="cl" style="--t:4.97s;--d:0.22s;--n:17"><span class="no">9</span><span class="tx">    <span class="a">languages</span> = {</span></div><div class="cl" style="--t:5.26s;--d:0.35s;--n:27"><span class="no">10</span><span class="tx">        <span class="s">&quot;Nepali&quot;</span>: <span class="s">&quot;native&quot;</span>,</span></div><div class="cl" style="--t:5.68s;--d:0.47s;--n:36"><span class="no">11</span><span class="tx">        <span class="s">&quot;English&quot;</span>: <span class="s">&quot;conversational&quot;</span>,</span></div><div class="cl" style="--t:6.22s;--d:0.58s;--n:45"><span class="no">12</span><span class="tx">        <span class="s">&quot;Hindi&quot;</span>: <span class="s">&quot;writes well, speaks basic&quot;</span>,</span></div><div class="cl" style="--t:6.88s;--d:0.10s;--n:5"><span class="no">13</span><span class="tx">    }</span></div><div class="cl" style="--t:7.05s;--d:0.71s;--n:55"><span class="no">14</span><span class="tx">    <span class="a">open_to</span> = [<span class="s">&quot;internships&quot;</span>, <span class="s">&quot;jobs&quot;</span>, <span class="s">&quot;freelance work&quot;</span>]</span></div><div class="cl" style="--t:7.83s;--d:0.10s;--n:1"><span class="no">15</span><span class="tx"></span></div><div class="cl" style="--t:8.00s;--d:0.36s;--n:28"><span class="no">16</span><span class="tx"><span class="pr">&gt;&gt;&gt;</span> <span class="f">print</span>(<span class="c">Developer</span>.open_to)</span></div><div class="cl res" style="--t:8.44s;--d:0.53s;--n:41"><span class="no">17</span><span class="tx">[<span class="s">&#x27;internships&#x27;</span>, <span class="s">&#x27;jobs&#x27;</span>, <span class="s">&#x27;freelance work&#x27;</span>]</span></div><div class="cl" style="--t:9.04s;--d:.01s;--n:1"><span class="no">18</span><span class="tx"><span class="pr">&gt;&gt;&gt;</span> <span class="cur"></span></span></div></div></div>
     <ul class="tech-grid" aria-label="Technologies and subjects"><li class="tech reveal" style="--d:0.00s"><span class="ic mono" aria-hidden="true">Py</span><div><h3>Python</h3><p>Main language. Used in the OJT and Fitness Hub.</p></div><span class="tag mono use">In use</span></li><li class="tech reveal" style="--d:0.04s"><span class="ic mono" aria-hidden="true">Dj</span><div><h3>Django</h3><p>Two-year OJT and the Fitness Hub backend.</p></div><span class="tag mono use">In use</span></li><li class="tech reveal" style="--d:0.08s"><span class="ic mono" aria-hidden="true">Jv</span><div><h3>Java</h3><p>Studying and practising.</p></div><span class="tag mono study">Studying</span></li><li class="tech reveal" style="--d:0.12s"><span class="ic mono" aria-hidden="true">C+</span><div><h3>C++</h3><p>Studying and practising.</p></div><span class="tag mono study">Studying</span></li><li class="tech reveal" style="--d:0.16s"><span class="ic mono" aria-hidden="true">Cs</span><div><h3>CSS</h3><p>Studying and practising interface styling.</p></div><span class="tag mono study">Studying</span></li><li class="tech reveal" style="--d:0.20s"><span class="ic mono" aria-hidden="true">Wb</span><div><h3>Web development</h3><p>Building web applications end to end.</p></div><span class="tag mono study">Studying</span></li><li class="tech reveal" style="--d:0.24s"><span class="ic mono" aria-hidden="true">Db</span><div><h3>DBMS</h3><p>Studying databases and data design.</p></div><span class="tag mono study">Studying</span></li><li class="tech reveal" style="--d:0.28s"><span class="ic mono" aria-hidden="true">Co</span><div><h3>COA</h3><p>Studying computer organisation and architecture.</p></div><span class="tag mono study">Studying</span></li><li class="tech reveal" style="--d:0.32s"><span class="ic mono" aria-hidden="true">OS</span><div><h3>Operating systems</h3><p>Studying how operating systems work.</p></div><span class="tag mono study">Studying</span></li><li class="tech reveal" style="--d:0.36s"><span class="ic mono" aria-hidden="true">Gh</span><div><h3>Git and GitHub</h3><p>Version control and public code.</p></div><span class="tag mono use">In use</span></li><li class="tech reveal" style="--d:0.40s"><span class="ic mono" aria-hidden="true">CI</span><div><h3>GitHub Actions</h3><p>Runs migrations and tests on every change.</p></div><span class="tag mono use">In use</span></li><li class="tech reveal" style="--d:0.44s"><span class="ic mono" aria-hidden="true">St</span><div><h3>Stripe</h3><p>Optional test-mode payments in the Fitness Hub store.</p></div><span class="tag mono use">In use</span></li></ul>
   </section>
 
@@ -1571,6 +1576,18 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
     hero.addEventListener('pointerleave', function () { mx = my = -999; });
     if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { vis = es[0].isIntersecting; go(); }).observe(cv);
     document.addEventListener('visibilitychange', go); go();
+  })();
+
+  /* code-style typing for section titles: sets step counts, finishes each line cleanly */
+  (function () {
+    if (RM) return;
+    var els = document.querySelectorAll('.chap-head .eyebrow, .chap-head h2, .chap-head .chap-sub');
+    Array.prototype.forEach.call(els, function (el, i) {
+      var n = Math.max(el.textContent.trim().length, 1), tag = el.tagName === 'H2', d = Math.max(0.35, n * (tag ? 0.05 : 0.022));
+      el.classList.add('typed'); el.style.setProperty('--n', n); el.style.setProperty('--d', d.toFixed(2) + 's');
+      el.style.setProperty('--dl', (el.classList.contains('eyebrow') ? 0.1 : tag ? 0.35 : 0.35 + n * 0.05 + 0.15).toFixed(2) + 's');
+    });
+    document.addEventListener('animationend', function (e) { var c = e.target.classList; if (c && (c.contains('typed') || (c.contains('tx') && e.target.closest('.term')))) e.target.style.setProperty('clip-path', 'none', 'important'); });
   })();
 
   /* reticle follows a fine pointer; idle when still */
