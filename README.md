@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Sagar Shahi | Developer Portfolio
 
 Personal portfolio of **Sagar Shahi**, a computer engineering student and developer in Kathmandu, Nepal.
@@ -43,3 +44,6 @@ Pushing to `main` publishes the site through GitHub Pages (**Settings > Pages > 
 
 - GitHub: [@Sagar-Shahi](https://github.com/Sagar-Shahi)
 - LinkedIn: [Sagar Shahi](https://www.linkedin.com/in/sagar-shahi-570003435)
+=======
+# Sagar-Shahi.github.io
+>>>>>>> 0f43787 (Add files via upload)
