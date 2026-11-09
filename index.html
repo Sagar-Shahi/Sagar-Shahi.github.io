@@ -74,8 +74,9 @@ button { font: inherit; color: inherit; }
 .sample { display: inline-block; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); border: 1px dashed var(--accent); border-radius: 999px; padding: 1px 9px; vertical-align: middle; white-space: nowrap; }
 
 /* scroll reveal: always visible at rest, just eased in */
-.js .reveal { opacity: 0; transform: translate(46px, -22px); filter: blur(12px); transition: opacity 1s var(--ease), transform 1.1s var(--ease), filter 1s var(--ease); transition-delay: var(--d, 0s); }
-.js .reveal.in { opacity: 1; transform: none; filter: none; }
+.js .reveal { opacity: 0; transform: translate(46px, -22px); filter: blur(12px); transition: opacity 2.2s ease, transform 2.6s var(--ease), filter 2.2s ease; transition-delay: var(--d, 0s); }
+.js .reveal.in { opacity: 1; transform: none; filter: none; animation: dustin 2.6s ease-out both; animation-delay: var(--d, 0s); }
+@keyframes dustin { from { -webkit-mask-image: linear-gradient(115deg, #000 35%, transparent 65%); mask-image: linear-gradient(115deg, #000 35%, transparent 65%); -webkit-mask-size: 320% 100%; mask-size: 320% 100%; -webkit-mask-position: 100% 0; mask-position: 100% 0; } to { -webkit-mask-image: linear-gradient(115deg, #000 35%, transparent 65%); mask-image: linear-gradient(115deg, #000 35%, transparent 65%); -webkit-mask-size: 320% 100%; mask-size: 320% 100%; -webkit-mask-position: 0 0; mask-position: 0 0; } }
 #dust { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 60; pointer-events: none; }
 #rain { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.55; }
 .fxbg .mist { position: absolute; inset: 0; background: radial-gradient(60vmax 40vmax at 15% 10%, rgba(150,80,255,0.16), transparent 70%), radial-gradient(55vmax 40vmax at 90% 80%, rgba(60,210,255,0.11), transparent 70%), radial-gradient(90vmax 70vmax at 50% 50%, transparent 40%, rgba(5,6,13,0.85) 100%); animation: mist 16s ease-in-out infinite alternate; }
@@ -1072,9 +1073,9 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
   var dcv = document.getElementById('dust'), dctx = dcv && dcv.getContext('2d'), specks = [], dRun = false;
   function puff(el) {
     if (!dctx || RM) return; var r = el.getBoundingClientRect(); if (r.width < 40 || r.height < 12) return;
-    var n = Math.min(70, Math.round(r.width * r.height / 2600) + 14);
-    for (var i = 0; i < n; i++) specks.push({ x: r.left + Math.random() * r.width, y: r.top + Math.random() * Math.min(r.height, 260), vx: -(20 + Math.random() * 60), vy: 10 + Math.random() * 40, l: 0, m: 0.8 + Math.random() * 0.9, s: 1 + Math.random() * 1.8 });
-    if (!dRun) { dRun = true; dcv.width = innerWidth; dcv.height = innerHeight; var tp = performance.now(); (function f(t) { var dt = Math.min((t - tp) / 1000, 0.05); tp = t; dctx.clearRect(0, 0, dcv.width, dcv.height); specks = specks.filter(function (k) { k.l += dt; if (k.l > k.m) return false; k.x += k.vx * dt; k.y += k.vy * dt; var a = 1 - k.l / k.m; dctx.fillStyle = 'rgba(210,190,255,' + (0.7 * a) + ')'; dctx.fillRect(k.x, k.y, k.s, k.s); return true; }); if (specks.length) requestAnimationFrame(f); else { dRun = false; dctx.clearRect(0, 0, dcv.width, dcv.height); } })(tp); }
+    var n = Math.min(150, Math.round(r.width * r.height / 1400) + 30);
+    for (var i = 0; i < n; i++) specks.push({ x: r.left + Math.random() * r.width, y: r.top + Math.random() * Math.min(r.height, 260), vx: -(15 + Math.random() * 45), vy: -(8 + Math.random() * 30), l: -Math.random() * 1.2, m: 1.6 + Math.random() * 1.6, s: 1 + Math.random() * 2 });
+    if (!dRun) { dRun = true; dcv.width = innerWidth; dcv.height = innerHeight; var tp = performance.now(); (function f(t) { var dt = Math.min((t - tp) / 1000, 0.05); tp = t; dctx.clearRect(0, 0, dcv.width, dcv.height); specks = specks.filter(function (k) { k.l += dt; if (k.l > k.m) return false; k.x += k.vx * dt; k.y += k.vy * dt; if (k.l < 0) return true; var a = 1 - k.l / k.m; dctx.fillStyle = 'rgba(210,190,255,' + (0.7 * a) + ')'; dctx.fillRect(k.x, k.y, k.s, k.s); return true; }); if (specks.length) requestAnimationFrame(f); else { dRun = false; dctx.clearRect(0, 0, dcv.width, dcv.height); } })(tp); }
   }
   /* mystical code rain behind everything */
   (function rain() {
