@@ -77,6 +77,20 @@ button { font: inherit; color: inherit; }
 .js .reveal { opacity: 0; transform: translate(46px, -22px); filter: blur(12px); transition: opacity 2.2s ease, transform 2.6s var(--ease), filter 2.2s ease; transition-delay: var(--d, 0s); }
 .js .reveal.in { opacity: 1; transform: none; filter: none; animation: dustin 2.6s ease-out both; animation-delay: var(--d, 0s); }
 @keyframes dustin { from { -webkit-mask-image: linear-gradient(115deg, #000 35%, transparent 65%); mask-image: linear-gradient(115deg, #000 35%, transparent 65%); -webkit-mask-size: 320% 100%; mask-size: 320% 100%; -webkit-mask-position: 100% 0; mask-position: 100% 0; } to { -webkit-mask-image: linear-gradient(115deg, #000 35%, transparent 65%); mask-image: linear-gradient(115deg, #000 35%, transparent 65%); -webkit-mask-size: 320% 100%; mask-size: 320% 100%; -webkit-mask-position: 0 0; mask-position: 0 0; } }
+html.xc, html.xc * { cursor: none !important; }
+html.xc input, html.xc textarea { cursor: text !important; }
+#cur-glow, #cur-trail, #cur-ring, #cur-dot { position: fixed; left: 0; top: 0; pointer-events: none; opacity: 0; transition: opacity 0.3s; }
+html.xc.curon #cur-glow, html.xc.curon #cur-trail, html.xc.curon #cur-ring, html.xc.curon #cur-dot { opacity: 1; }
+#cur-glow { z-index: 0; width: 520px; height: 520px; margin: -260px 0 0 -260px; background: radial-gradient(closest-side, rgba(120,90,255,0.13), rgba(80,210,255,0.05) 55%, transparent); mix-blend-mode: screen; }
+#cur-trail { z-index: 79; width: 100%; height: 100%; }
+#cur-ring { z-index: 80; width: 38px; height: 38px; margin: -19px 0 0 -19px; border: 1.5px solid rgba(90,225,255,0.8); border-radius: 50%; display: grid; place-items: center; transition: width 0.28s var(--ease), height 0.28s var(--ease), margin 0.28s var(--ease), background 0.28s, border-color 0.28s, opacity 0.3s; box-shadow: 0 0 18px rgba(90,225,255,0.25); }
+#cur-ring span { font: 600 10px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: #05060d; opacity: 0; transition: opacity 0.2s; }
+#cur-ring.hov { width: 74px; height: 74px; margin: -37px 0 0 -37px; background: rgba(90,225,255,0.92); border-color: transparent; }
+#cur-ring.hov span { opacity: 1; }
+html.xc.curon #cur-ring.hov ~ #cur-dot { opacity: 0; }
+#cur-ring.down { width: 26px; height: 26px; margin: -13px 0 0 -13px; background: rgba(165,110,255,0.35); }
+#cur-ring.txt { opacity: 0 !important; }
+#cur-dot { z-index: 81; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px #5ae1ff, 0 0 20px #a56eff; }
 #dust { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 60; pointer-events: none; }
 #rain { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.55; }
 .fxbg .mist { position: absolute; inset: 0; background: radial-gradient(60vmax 40vmax at 15% 10%, rgba(150,80,255,0.16), transparent 70%), radial-gradient(55vmax 40vmax at 90% 80%, rgba(60,210,255,0.11), transparent 70%), radial-gradient(90vmax 70vmax at 50% 50%, transparent 40%, rgba(5,6,13,0.85) 100%); animation: mist 16s ease-in-out infinite alternate; }
@@ -624,7 +638,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
 </style>
 
 <div class="boot" id="boot" role="presentation"><canvas id="forge" aria-hidden="true"></canvas><span class="boot-skip mono">Tap to skip</span></div>
-<div class="fxbg" aria-hidden="true"><canvas id="rain"></canvas><div class="mist"></div></div><canvas id="dust" aria-hidden="true"></canvas>
+<div class="fxbg" aria-hidden="true"><canvas id="rain"></canvas><div class="mist"></div></div><canvas id="dust" aria-hidden="true"></canvas><div id="cur-glow" aria-hidden="true"></div><canvas id="cur-trail" aria-hidden="true"></canvas><div id="cur-ring" aria-hidden="true"><span></span></div><div id="cur-dot" aria-hidden="true"></div>
 </head>
 <body>
 <div class="wrap">
@@ -938,6 +952,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
   /* Stark boot sequence: short, skippable, shown once per visit */
   var bootEl = document.getElementById('boot'), booted = false, bootDone = false, afterBoot = [];
   try { booted = sessionStorage.getItem('booted') === '1'; } catch (e) {}
+  if (/[?&]intro\b/.test(location.search)) booted = false;
   function runAfterBoot(fn) { if (bootDone) fn(); else afterBoot.push(fn); }
   function finishBoot() {
     if (bootDone) return; bootDone = true;
@@ -1139,6 +1154,44 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
       if (k < 1) requestAnimationFrame(step);
     })(performance.now());
   }
+  /* smooth cursor tracker: dot, lagging ring, comet trail, glow, magnetic buttons, context labels */
+  (function cursor() {
+    if (RM || !window.matchMedia || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    var ring = document.getElementById('cur-ring'), dot = document.getElementById('cur-dot'), glow = document.getElementById('cur-glow'), tc = document.getElementById('cur-trail');
+    if (!ring || !dot || !tc) return; var lab = ring.firstChild, tx = tc.getContext('2d'), W = 0, H = 0;
+    function size() { W = tc.width = innerWidth; H = tc.height = innerHeight; } size(); window.addEventListener('resize', size);
+    var mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my, gx = mx, gy = my, pts = [], mag = null, shown = false;
+    root.classList.add('xc');
+    window.addEventListener('pointermove', function (e) {
+      mx = e.clientX; my = e.clientY; if (!shown) { shown = true; rx = gx = mx; ry = gy = my; root.classList.add('curon'); }
+      var t = e.target.closest ? e.target.closest('a, button, .btn, [role=button], .svc, .gh-item, .circ, summary, .acc-btn, input, textarea, canvas') : null;
+      var isTxt = t && /^(INPUT|TEXTAREA)$/.test(t.tagName);
+      ring.classList.toggle('txt', !!isTxt);
+      if (t && !isTxt) {
+        var l = t.getAttribute('data-cur') || (t.tagName === 'CANVAS' ? 'Drag' : t.matches('.svc, .gh-item') ? 'View' : /^(mailto:)/.test(t.getAttribute('href') || '') ? 'Email' : t.hasAttribute('download') ? 'Save' : t.tagName === 'A' ? (/^#/.test(t.getAttribute('href') || '') ? 'Go' : 'Open') : 'Press');
+        lab.textContent = l; ring.classList.add('hov');
+      } else ring.classList.remove('hov');
+      var b = e.target.closest ? e.target.closest('.btn, .jv-launch, .totop') : null;
+      if (mag && mag !== b) { mag.style.translate = ''; mag = null; }
+      if (b) { mag = b; var r = b.getBoundingClientRect(); b.style.translate = ((mx - (r.left + r.width / 2)) * 0.22).toFixed(1) + 'px ' + ((my - (r.top + r.height / 2)) * 0.3).toFixed(1) + 'px'; }
+    }, { passive: true });
+    document.addEventListener('pointerdown', function () { ring.classList.add('down'); });
+    document.addEventListener('pointerup', function () { ring.classList.remove('down'); });
+    document.documentElement.addEventListener('pointerleave', function () { root.classList.remove('curon'); shown = false; });
+    (function loop() {
+      rx += (mx - rx) * 0.16; ry += (my - ry) * 0.16; gx += (mx - gx) * 0.06; gy += (my - gy) * 0.06;
+      dot.style.transform = 'translate3d(' + mx + 'px,' + my + 'px,0)';
+      ring.style.transform = 'translate3d(' + rx + 'px,' + ry + 'px,0)';
+      glow.style.transform = 'translate3d(' + gx + 'px,' + gy + 'px,0)';
+      pts.push({ x: rx, y: ry, t: 1 }); if (pts.length > 26) pts.shift();
+      tx.clearRect(0, 0, W, H);
+      for (var i = 1; i < pts.length; i++) {
+        var a = i / pts.length; tx.strokeStyle = 'rgba(' + (120 + 90 * (1 - a) | 0) + ',' + (200 - 80 * (1 - a) | 0) + ',255,' + (a * 0.55) + ')'; tx.lineWidth = a * 4; tx.lineCap = 'round';
+        tx.beginPath(); tx.moveTo(pts[i - 1].x, pts[i - 1].y); tx.lineTo(pts[i].x, pts[i].y); tx.stroke();
+      }
+      requestAnimationFrame(loop);
+    })();
+  })();
   /* mystical code rain behind everything */
   (function rain() {
     var cv = document.getElementById('rain'); if (!cv || RM) return; var c = cv.getContext('2d');
