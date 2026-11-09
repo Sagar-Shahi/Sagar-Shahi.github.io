@@ -1070,29 +1070,46 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
 
   /* reveal on scroll */
   /* ash puff when a block appears on scroll */
+  var SNIP = ['from django.db import models', 'class Member(models.Model):', 'name = models.CharField(max_length=80)', 'def checkout(request):', 'cart = Cart.objects.get(user=request.user)', 'return render(request, "done.html")', 'public static void main(String[] args) {', 'System.out.println("Hello, world");', '#include <iostream>', 'int main() { return 0; }', 'for (int i = 0; i < n; i++) {', 'git commit -m "ship it"', '// TODO: build something great', 'import stripe', 'if (user.isAuthenticated()) {', 'SELECT * FROM members WHERE active = 1;', 'async function load() { await fetch(url); }', 'while (true) { learn(); build(); }', 'try { run(); } catch (e) { fix(e); }', 'return 0;', '}', 'self.status = "active"', 'urlpatterns = [path("", views.home)]', 'print("Sagar Shahi")'], KW = /^(from|import|class|def|return|public|static|void|int|for|while|if|else|try|catch|async|await|function|SELECT|FROM|WHERE|self|true|false|const|let)$/;
+  function codeLine() {
+    var t = SNIP[(Math.random() * SNIP.length) | 0], c = [], re = /("[^"]*"|\/\/.*|#.*|[A-Za-z_][A-Za-z0-9_]*|\d+|\s+|.)/g, m, pos = 0;
+    while ((m = re.exec(t))) {
+      var w = m[0], col = '#c9b8ff';
+      if (w[0] === '"') col = '#8be28b'; else if (w[0] === '/' && w[1] === '/') col = '#6e7aa8'; else if (w[0] === '#' && w !== '#include') col = '#6e7aa8'; else if (KW.test(w) || w === '#include') col = '#f29a3f'; else if (/^\d/.test(w)) col = '#ff9ad6'; else if (/^[A-Za-z_]/.test(w) && t[pos + w.length] === '(') col = '#5ae1ff'; else if (/^[{}()\[\]<>;=,.:]$/.test(w)) col = '#8e94ae';
+      for (var i = 0; i < w.length; i++) c.push(col); pos += w.length;
+    }
+    return { t: t, c: c };
+  }
   var dcv = document.getElementById('dust'), dctx = dcv && dcv.getContext('2d'), fields = [], dRun = false;
   function puff(el) {
     if (!dctx || RM) return; var r = el.getBoundingClientRect(); if (r.width < 40 || r.height < 12) return;
-    var cw = 11, ch = 16, cols = Math.max(1, Math.floor(r.width / cw)), rows = Math.max(1, Math.min(Math.floor(r.height / ch), Math.floor(innerHeight / ch)));
-    if (cols * rows > 900) { cw = Math.ceil(r.width / 30); ch = cw * 1.4; cols = Math.floor(r.width / cw); rows = Math.min(Math.floor(r.height / ch), Math.floor(innerHeight / ch)); }
+    var fs = 13, cw, ch, cols, rows;
+    for (;;) { cw = fs * 0.6; ch = fs * 1.35; cols = Math.max(1, Math.floor(r.width / cw)); rows = Math.max(1, Math.min(Math.floor(r.height / ch), Math.floor(innerHeight / ch))); if (cols * rows <= 1300 || fs > 40) break; fs += 2; }
     var cells = [];
-    for (var i = 0; i < cols * rows; i++) { var cx = i % cols, cy = (i / cols) | 0; cells.push({ x: cx * cw, y: cy * ch, d: (cx / cols) * 1.1 + Math.random() * 0.9, b: Math.random() < 0.5 ? '0' : '1', f: Math.random() * 0.25 }); }
-    fields.push({ el: el, cells: cells, cw: cw, ch: ch, t: 0, m: 2.9 });
+    for (var ry = 0; ry < rows; ry++) {
+      var ln = codeLine(), ind = Math.random() < 0.4 ? 2 + ((Math.random() * 3) | 0) * 2 : 0, base = ry * 0.07;
+      if (Math.random() < 0.12) ln = { t: '', c: [] };
+      for (var rx = 0; rx < cols; rx++) {
+        var k2 = rx - ind, chr = k2 >= 0 && k2 < ln.t.length ? ln.t[k2] : null;
+        if (chr === null || chr === ' ') continue;
+        cells.push({ x: rx * cw, y: ry * ch, d: (rx / cols) * 1.1 + base + Math.random() * 0.25, b: chr, k: ln.c[k2] });
+      }
+    }
+    fields.push({ el: el, cells: cells, cw: cw, ch: ch, fs: fs, t: 0, m: 3.1 });
     if (!dRun) { dRun = true; dcv.width = innerWidth; dcv.height = innerHeight; var tp = performance.now();
       (function f(t) {
         var dt = Math.min((t - tp) / 1000, 0.05); tp = t; dctx.clearRect(0, 0, dcv.width, dcv.height);
         fields = fields.filter(function (fd) {
           fd.t += dt; if (fd.t > fd.m) return false;
-          var rr = fd.el.getBoundingClientRect(); dctx.font = (fd.ch * 0.8) + 'px monospace'; dctx.textBaseline = 'top';
+          var rr = fd.el.getBoundingClientRect(); dctx.font = fd.fs + 'px ui-monospace, Menlo, Consolas, monospace'; dctx.textBaseline = 'top';
           var pr = fd.t / fd.m, sx = rr.left + rr.width * Math.min(1.1, pr * 1.5) - 10;
           if (pr < 0.7) { var gr = dctx.createLinearGradient(sx - 40, 0, sx + 2, 0); gr.addColorStop(0, 'rgba(90,225,255,0)'); gr.addColorStop(1, 'rgba(120,235,255,' + (0.55 * (1 - pr / 0.7)) + ')'); dctx.fillStyle = gr; dctx.fillRect(sx - 40, Math.max(0, rr.top), 42, Math.min(rr.height, innerHeight)); }
           fd.cells.forEach(function (c) {
             var u = fd.t - c.d * 0.8; if (u < 0) return; var life = 1.0; if (u > life) return;
-            if (Math.random() < 0.08) c.b = c.b === '0' ? '1' : '0';
             var a = u < 0.18 ? u / 0.18 : 1 - (u - 0.18) / (life - 0.18);
-            var hot = u < 0.3; dctx.fillStyle = hot ? 'rgba(120,235,255,' + (0.95 * a) + ')' : 'rgba(170,120,255,' + (0.8 * a) + ')';
-            var yy = rr.top + c.y - (u * 14); if (yy < -20 || yy > innerHeight) return;
-            dctx.fillText(c.b, rr.left + c.x - u * 10, yy);
+            dctx.globalAlpha = a * (u < 0.12 ? 1 : 0.85); dctx.fillStyle = u < 0.12 ? '#e9fbff' : c.k;
+            var yy = rr.top + c.y - (u * 6); if (yy < -20 || yy > innerHeight) return;
+            dctx.fillText(c.b, rr.left + c.x - u * 8, yy); dctx.globalAlpha = 1;
           });
           return true;
         });
@@ -1100,6 +1117,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
       })(tp); }
   }
   /* the real text itself decodes from binary, left to right */
+  var BITS = '01010101{}();=<>/#$_';
   function bitDecode(root0) {
     if (RM) return; var nodes = [], total = 0;
     (function walk(n) {
@@ -1110,12 +1128,12 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
     })(root0);
     if (!nodes.length || total > 700) return;
     var t0 = performance.now() + 250, dur = Math.min(2200, 900 + total * 6), done = false;
-    nodes.forEach(function (x) { x.n.nodeValue = x.o.replace(/\S/g, function () { return Math.random() < 0.5 ? '0' : '1'; }); });
+    nodes.forEach(function (x) { x.n.nodeValue = x.o.replace(/\S/g, function () { return BITS[(Math.random() * BITS.length) | 0]; }); });
     (function step(t) {
       var k = Math.max(0, Math.min((t - t0) / dur, 1)), cut = Math.floor(total * k), seen = 0;
       nodes.forEach(function (x) {
         var o = x.o, out = '';
-        for (var i = 0; i < o.length; i++) { var ch = o[i]; if (/\s/.test(ch) || seen + i < cut) out += ch; else out += Math.random() < 0.5 ? '0' : '1'; }
+        for (var i = 0; i < o.length; i++) { var ch = o[i]; if (/\s/.test(ch) || seen + i < cut) out += ch; else out += BITS[(Math.random() * BITS.length) | 0]; }
         seen += o.length; x.n.nodeValue = k >= 1 ? o : out;
       });
       if (k < 1) requestAnimationFrame(step);
