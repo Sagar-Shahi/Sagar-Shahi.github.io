@@ -362,9 +362,11 @@ footer a:hover { color: var(--accent); }
 .hero > .eyebrow::after { display: none; }
 
 /* boot sequence */
-.boot { position: fixed; inset: 0; z-index: 100; display: none; place-items: center; background: #03040a; cursor: pointer; transition: opacity 0.6s ease, visibility 0.6s; }
+.boot { position: fixed; inset: 0; z-index: 100; display: none; place-items: center; background: transparent; cursor: pointer; transition: opacity 0.6s ease, visibility 0.6s; }
 html.booting .boot { display: grid; }
 html.booting body { overflow: hidden; }
+body > *:not(.boot):not(script) { transition: opacity 0.9s ease; }
+html.booting:not(.pg) body > *:not(.boot):not(script) { opacity: 0; }
 .boot.out { opacity: 0; visibility: hidden; }
 .boot-in { width: min(86vw, 420px); display: flex; flex-direction: column; align-items: center; gap: 22px; }
 .reactor { position: relative; width: 120px; height: 120px; }
@@ -616,7 +618,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
 }
 </style>
 
-<div class="boot" id="boot" role="presentation"><canvas id="forge" aria-hidden="true"></canvas><div id="forge-cur" aria-hidden="true"></div><span class="boot-skip mono">Tap to skip</span></div>
+<div class="boot" id="boot" role="presentation"><canvas id="forge" aria-hidden="true"></canvas><span class="boot-skip mono">Tap to skip</span></div>
 <div class="fxbg" aria-hidden="true"></div>
 </head>
 <body>
@@ -935,126 +937,99 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
   function finishBoot() {
     if (bootDone) return; bootDone = true;
     try { sessionStorage.setItem('booted', '1'); } catch (e) {}
-    if (bootEl) { bootEl.classList.add('out'); setTimeout(function () { root.classList.remove('booting'); if (bootEl.parentNode) bootEl.parentNode.removeChild(bootEl); }, 650); }
+    if (bootEl) { bootEl.classList.add('out'); setTimeout(function () { root.classList.remove('booting'); root.classList.add('pg'); if (bootEl.parentNode) bootEl.parentNode.removeChild(bootEl); }, 650); }
     afterBoot.forEach(function (f) { f(); }); afterBoot = [];
   }
   if (bootEl && !RM && !booted && document.getElementById('forge')) {
     root.classList.add('booting');
     bootEl.addEventListener('click', finishBoot);
-    setTimeout(finishBoot, 7500);
-    (function forge() {
-      var cv = document.getElementById('forge'), box = document.getElementById('forge-cur'), ctx = cv.getContext('2d');
-      var dpr = Math.min(window.devicePixelRatio || 1, 1.5), W = window.innerWidth, H = window.innerHeight, mob = W < 720;
+    setTimeout(finishBoot, 6000);
+    (function snap() {
+      var cv = document.getElementById('forge'), ctx = cv.getContext('2d');
+      var W = window.innerWidth, H = window.innerHeight, mob = W < 720;
+      var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      /* the page, drawn as simple blocks; each block is made by one cursor in a set time window */
-      var shapes = [], x0 = mob ? W * 0.06 : W * 0.1, ww = W - 2 * x0;
-      function R(c, t, d, x, y, w, hh, lab) { shapes.push({ k: 'r', c: c, t: t, d: d, x: x, y: y, w: w, h: hh, lab: lab }); }
-      function C(c, t, d, x, y, r, lab) { shapes.push({ k: 'c', c: c, t: t, d: d, x: x, y: y, r: r, lab: lab }); }
-      function Ln(c, t, d, x, y, w, lab) { shapes.push({ k: 'l', c: c, t: t, d: d, x: x, y: y, w: w, lab: lab }); }
-      if (!mob) {
-        R(0, 0.9, 0.7, x0, H * 0.06, ww, H * 0.06, 'drawing navigation');
-        Ln(0, 1.6, 0.25, x0 + 14, H * 0.09, ww * 0.1, 'adding logo'); Ln(0, 1.85, 0.3, x0 + ww * 0.62, H * 0.09, ww * 0.34, 'adding links');
-        R(1, 1.0, 0.55, x0, H * 0.2, ww * 0.4, H * 0.1, 'sketching hero'); R(1, 1.55, 0.45, x0, H * 0.33, ww * 0.3, H * 0.1, 'sketching hero');
-        Ln(1, 2.0, 0.25, x0, H * 0.48, ww * 0.46, 'writing intro'); Ln(1, 2.25, 0.25, x0, H * 0.51, ww * 0.4, 'writing intro'); Ln(1, 2.5, 0.25, x0, H * 0.54, ww * 0.3, 'writing intro');
-        R(0, 2.2, 0.35, x0, H * 0.61, ww * 0.13, H * 0.06, 'adding buttons'); R(0, 2.55, 0.35, x0 + ww * 0.15, H * 0.61, ww * 0.13, H * 0.06, 'adding buttons'); R(0, 2.9, 0.35, x0 + ww * 0.3, H * 0.61, ww * 0.13, H * 0.06, 'adding buttons');
-        C(2, 0.9, 1.1, x0 + ww * 0.79, H * 0.36, Math.min(W, H) * 0.16, 'placing portrait');
-        var cw = (ww - 2 * 18) / 3; R(2, 2.1, 0.5, x0, H * 0.74, cw, H * 0.2, 'researching projects'); R(2, 2.6, 0.5, x0 + cw + 18, H * 0.74, cw, H * 0.2, 'adding project cards'); R(2, 3.1, 0.5, x0 + 2 * (cw + 18), H * 0.74, cw, H * 0.2, 'adding skills');
-      } else {
-        R(0, 0.9, 0.6, x0, H * 0.05, ww, H * 0.06, 'drawing navigation');
-        C(2, 0.9, 1.0, x0 + ww * 0.82, H * 0.2, W * 0.13, 'placing portrait');
-        R(1, 1.0, 0.5, x0, H * 0.16, ww * 0.56, H * 0.05, 'sketching hero'); R(1, 1.5, 0.5, x0, H * 0.23, ww * 0.42, H * 0.05, 'sketching hero');
-        Ln(1, 2.0, 0.25, x0, H * 0.36, ww * 0.95, 'writing intro'); Ln(1, 2.25, 0.25, x0, H * 0.39, ww * 0.85, 'writing intro'); Ln(1, 2.5, 0.25, x0, H * 0.42, ww * 0.6, 'writing intro');
-        R(0, 1.7, 0.35, x0, H * 0.5, ww * 0.44, H * 0.05, 'adding buttons'); R(0, 2.1, 0.35, x0 + ww * 0.5, H * 0.5, ww * 0.44, H * 0.05, 'adding buttons');
-        R(2, 2.0, 0.55, x0, H * 0.6, ww, H * 0.14, 'researching projects'); R(2, 2.55, 0.55, x0, H * 0.78, ww, H * 0.14, 'adding project cards');
-      }
-      function pt(s, f) {            /* point at fraction f (0..1) along a shape's outline */
-        var u;
-        if (s.k === 'l') return { x: s.x + s.w * f, y: s.y };
-        if (s.k === 'c') { u = -Math.PI / 2 + f * 2 * Math.PI; return { x: s.x + Math.cos(u) * s.r, y: s.y + Math.sin(u) * s.r }; }
-        var per = 2 * (s.w + s.h), L = f * per;
-        if (L < s.w) return { x: s.x + L, y: s.y }; L -= s.w;
-        if (L < s.h) return { x: s.x + s.w, y: s.y + L }; L -= s.h;
-        if (L < s.w) return { x: s.x + s.w - L, y: s.y + s.h }; L -= s.w;
-        return { x: s.x, y: s.y + s.h - L };
-      }
-      function per(s) { return s.k === 'l' ? s.w : s.k === 'c' ? 2 * Math.PI * s.r : 2 * (s.w + s.h); }
-      /* dust: every shape gets particles that fly in as its cursor reaches them; the rest drift and fade */
-      var ps = [], i, j, s, n;
-      for (i = 0; i < shapes.length; i++) {
-        s = shapes[i]; n = Math.max(8, Math.min(mob ? 70 : 130, Math.round(per(s) / 8)));
-        for (j = 0; j < n; j++) { var f = j / n; ps.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, s: s, f: f, col: j % 7 === 0 ? 2 : 1, st: 0, fx: 0, fy: 0 }); }
-      }
-      var dust = mob ? 220 : 480;
-      for (i = 0; i < dust; i++) ps.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - 0.5) * 0.45, vy: (Math.random() - 0.5) * 0.45 - 0.05, s: null, col: 0 });
-      /* cursors */
-      var CUR = [{ n: 'Sagar', c: '#f29a3f' }, { n: 'SAGE', c: '#4fd8ff' }, { n: 'Django', c: '#6ee7a0' }], cs = [];
-      CUR.forEach(function (cu, k) {
-        var el = document.createElement('div'); el.className = 'fc'; el.style.setProperty('--c', cu.c); el.style.opacity = 0;
-        el.innerHTML = '<svg viewBox="0 0 24 24"><path d="M3 2l17 9-7.5 2L9 21z"/></svg><span class="tag"></span>';
-        box.appendChild(el);
-        var st = shapes.filter(function (q) { return q.c === k; }).sort(function (a, b) { return a.t - b.t; });
-        cs.push({ el: el, tag: el.lastChild, name: cu.n, steps: st, txt: '', sx: k === 0 ? -40 : k === 1 ? W * 0.5 : W + 40, sy: k === 1 ? -40 : H * (0.3 + k * 0.15), ripAt: -1, last: -1 });
-      });
-      var ripples = [], t0 = performance.now(), END = 4.1, raf = 0;
-      function ease(x) { return x < 0 ? 0 : x > 1 ? 1 : 1 - Math.pow(1 - x, 3); }
-      function smooth(x) { return x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x); }
-      function cursorAt(c, T) {
-        var st = c.steps, k, a, b, p, q;
-        for (k = 0; k < st.length; k++) {
-          a = st[k];
-          if (T >= a.t && T <= a.t + a.d) { p = pt(a, (T - a.t) / a.d); return { x: p.x, y: p.y, lab: a.lab }; }
-          if (T < a.t) {
-            var from = k === 0 ? { x: c.sx, y: c.sy, t: 0.15 } : (function () { var pv = st[k - 1], e = pt(pv, 1); return { x: e.x, y: e.y, t: pv.t + pv.d }; })();
-            q = pt(a, 0); var u = smooth((T - from.t) / Math.max(0.15, a.t - from.t));
-            return { x: from.x + (q.x - from.x) * u, y: from.y + (q.y - from.y) * u, lab: k === 0 && T < a.t - 0.3 ? 'researching…' : 'researching…' };
+      /* 1. draw the first screen of the real page onto a hidden canvas */
+      var oc = document.createElement('canvas'); oc.width = W; oc.height = H; var o = oc.getContext('2d');
+      function col(c, fb) { var m = /rgba?\(([\d.]+)[ ,]+([\d.]+)[ ,]+([\d.]+)(?:[ ,\/]+([\d.]+))?/.exec(c); if (!m || (m[4] !== undefined && +m[4] === 0)) return fb; return 'rgb(' + m[1] + ',' + m[2] + ',' + m[3] + ')'; }
+      function inView(r) { return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < H && r.right > 0 && r.left < W; }
+      try {
+        var all = document.querySelectorAll('.hero, .hero *, .nav, .nav *');
+        Array.prototype.forEach.call(all, function (el) {
+          if (el.closest('.hero-bg') || el.closest('.boot') || el.tagName === 'SCRIPT' || el.tagName === 'STYLE') return;
+          var cs = getComputedStyle(el), r = el.getBoundingClientRect();
+          if (cs.display === 'none' || cs.visibility === 'hidden' || !inView(r)) return;
+          var rad = parseFloat(cs.borderTopLeftRadius) || 0;
+          if (el.tagName === 'IMG') { try { o.save(); o.beginPath(); o.arc(r.left + r.width / 2, r.top + r.height / 2, Math.min(r.width, r.height) / 2, 0, 7); o.clip(); o.drawImage(el, r.left, r.top, r.width, r.height); o.restore(); } catch (e) {} return; }
+          var bg = col(cs.backgroundColor, null);
+          if (bg && el.className && /btn|chip|status|stat\b/.test(String(el.className))) { o.fillStyle = bg; o.globalAlpha = 0.9; o.fillRect(r.left, r.top, r.width, r.height); o.globalAlpha = 1; }
+          if (parseFloat(cs.borderTopWidth) > 0 && /btn|chip|stat\b/.test(String(el.className))) { o.strokeStyle = col(cs.borderTopColor, '#5b6b9a'); o.lineWidth = 1.5; o.strokeRect(r.left + 1, r.top + 1, r.width - 2, r.height - 2); }
+          for (var n = el.firstChild; n; n = n.nextSibling) {
+            if (n.nodeType !== 3 || !n.nodeValue.trim()) continue;
+            var txt = n.nodeValue, re = /\S+/g, m, rg = document.createRange();
+            o.font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+            o.fillStyle = col(cs.color, '#f4f7ff'); o.textBaseline = 'alphabetic';
+            var tt = cs.textTransform;
+            while ((m = re.exec(txt))) {
+              rg.setStart(n, m.index); rg.setEnd(n, m.index + m[0].length);
+              var rr = rg.getBoundingClientRect(); if (!inView(rr)) continue;
+              var w = tt === 'uppercase' ? m[0].toUpperCase() : m[0];
+              var fs = parseFloat(cs.fontSize);
+              o.fillText(w, rr.left, rr.top + rr.height / 2 + fs * 0.34);
+            }
           }
-        }
-        var lastS = st[st.length - 1], e2 = pt(lastS, 1); return { x: e2.x, y: e2.y, lab: 'done' };
+        });
+      } catch (e) {}
+      /* 2. turn the pixels into dust */
+      var step = mob ? 2 : 3, px = [], img;
+      try { img = o.getImageData(0, 0, W, H).data; } catch (e) { img = null; }
+      if (!img) { setTimeout(finishBoot, 600); return; }
+      for (var y = 0; y < H; y += step) for (var x = 0; x < W; x += step) {
+        var k = (y * W + x) * 4, a = img[k + 3]; if (a < 40) continue;
+        var lum = img[k] * 0.3 + img[k + 1] * 0.6 + img[k + 2] * 0.1; if (lum < 30) continue;
+        px.push(x, y, img[k], img[k + 1], img[k + 2]);
       }
+      var N = px.length / 5; if (N > 26000) { var keep = 26000 / N, q = []; for (var z = 0; z < N; z++) if (Math.random() < keep) q.push(px[z * 5], px[z * 5 + 1], px[z * 5 + 2], px[z * 5 + 3], px[z * 5 + 4]); px = q; N = px.length / 5; }
+      var P = [];
+      for (var i2 = 0; i2 < N; i2++) {
+        var hx = px[i2 * 5], hy = px[i2 * 5 + 1];
+        P.push({ hx: hx, hy: hy, r: px[i2 * 5 + 2], g: px[i2 * 5 + 3], b: px[i2 * 5 + 4],
+          sx: hx + 160 + Math.random() * 620, sy: hy - 40 - Math.random() * 300 + (Math.random() - 0.3) * 80,
+          d: (hx / W) * 1.15 + Math.random() * 0.5, t: 0.8 + Math.random() * 0.7, w: Math.random() * 6.28, a: 6 + Math.random() * 16 });
+      }
+      /* drifting ash that is not part of the page */
+      var ash = []; for (var h = 0; h < 120; h++) ash.push({ x: Math.random() * W, y: Math.random() * H, v: 60 + Math.random() * 160, s: 1 + Math.random() * 1.6, o: Math.random() * 6.28 });
+      var rafId, t0 = performance.now(), shown = false, revealed = false;
+      function ease(x) { return 1 - Math.pow(1 - x, 3); }
       function frame(now) {
-        raf = 0; if (bootDone) return;
-        var T = (now - t0) / 1000, k, m, pp, s2, u2, col;
+        if (bootDone) return;
+        var T = (now - t0) / 1000;
         ctx.clearRect(0, 0, W, H);
-        /* outlines draw behind their cursor and fill softly once complete */
-        for (k = 0; k < shapes.length; k++) {
-          s2 = shapes[k]; u2 = (T - s2.t - 0.2) / s2.d; if (u2 <= 0) continue; if (u2 > 1) u2 = 1;
-          var flash = T > 3.5 ? Math.min(1, (T - 3.5) / 0.4) : 0;
-          ctx.strokeStyle = 'rgba(79,216,255,' + (0.35 + 0.5 * flash).toFixed(2) + ')'; ctx.lineWidth = 1; ctx.beginPath();
-          var steps = s2.k === 'l' ? 2 : 48; for (m = 0; m <= steps; m++) { var q2 = pt(s2, u2 * m / steps); if (m === 0) ctx.moveTo(q2.x, q2.y); else ctx.lineTo(q2.x, q2.y); }
-          if (u2 >= 1 && s2.k !== 'l') ctx.closePath(); ctx.stroke();
-          if (u2 >= 1 && s2.k !== 'l') { var fa = Math.min(1, (T - s2.t - s2.d - 0.2) / 0.5) * (0.06 + 0.07 * flash); if (fa > 0) { ctx.fillStyle = 'rgba(79,216,255,' + fa.toFixed(3) + ')'; if (s2.k === 'r') ctx.fillRect(s2.x, s2.y, s2.w, s2.h); else { ctx.beginPath(); ctx.arc(s2.x, s2.y, s2.r, 0, 6.2832); ctx.fill(); } } }
+        var im = ctx.createImageData(Math.round(W * dpr), Math.round(H * dpr)), buf = new Uint32Array(im.data.buffer), cw = im.width, chh = im.height;
+        var fade = T < 2.3 ? 1 : Math.max(0, 1 - (T - 2.3) / 0.8);
+        for (var n2 = 0; n2 < P.length; n2++) {
+          var p = P[n2], u = (T - p.d) / p.t; if (u <= 0) u = 0; if (u > 1) u = 1;
+          var e = ease(u), inv = 1 - e;
+          var x = p.hx + (p.sx - p.hx) * inv + Math.sin(T * 5 + p.w) * p.a * inv;
+          var y = p.hy + (p.sy - p.hy) * inv + Math.cos(T * 4 + p.w) * p.a * 0.6 * inv;
+          var mix = e * e, rr = 200 + (p.r - 200) * mix, gg = 185 + (p.g - 185) * mix, bb = 170 + (p.b - 170) * mix;
+          var al = (u === 0 ? 0 : 0.25 + 0.75 * Math.min(1, u * 2.2)) * fade;
+          if (al <= 0.01) continue;
+          var A = Math.round(al * 255) & 255, c32 = (A << 24) | ((bb | 0) << 16) | ((gg | 0) << 8) | (rr | 0);
+          var X = Math.round(x * dpr), Y = Math.round(y * dpr);
+          if (X < 0 || Y < 0 || X >= cw - 1 || Y >= chh - 1) continue;
+          var o1 = Y * cw + X; buf[o1] = c32; buf[o1 + 1] = c32; buf[o1 + cw] = c32; buf[o1 + cw + 1] = c32;
         }
-        /* particles */
-        var dustA = T < 2.8 ? 0.4 : Math.max(0, 0.4 * (1 - (T - 2.8) / 0.9)), colors = ['rgba(140,200,255,' + dustA.toFixed(2) + ')', 'rgba(79,216,255,0.95)', 'rgba(242,154,63,0.95)'], pass;
-        for (pass = 0; pass < 3; pass++) {
-          ctx.fillStyle = colors[pass]; ctx.beginPath();
-          for (k = 0; k < ps.length; k++) {
-            pp = ps[k]; if (pp.col !== pass) continue;
-            if (pp.s) {
-              var go = pp.s.t + pp.f * pp.s.d;
-              if (T >= go) {
-                if (!pp.st) { pp.st = 1; pp.fx = pp.x; pp.fy = pp.y; }
-                var tg = pt(pp.s, pp.f), e = ease((T - go) / 0.55); pp.x = pp.fx + (tg.x - pp.fx) * e; pp.y = pp.fy + (tg.y - pp.fy) * e;
-              } else { pp.x += pp.vx; pp.y += pp.vy; if (pp.x < 0 || pp.x > W) pp.vx *= -1; if (pp.y < 0 || pp.y > H) pp.vy *= -1; }
-            } else { pp.x += pp.vx; pp.y += pp.vy; if (pp.x < 0) pp.x = W; if (pp.x > W) pp.x = 0; if (pp.y < 0) pp.y = H; if (pp.y > H) pp.y = 0; }
-            if (dustA <= 0 && !pp.s) continue;
-            ctx.rect(pp.x - 1, pp.y - 1, pass === 0 ? 1.6 : 2.2, pass === 0 ? 1.6 : 2.2);
-          }
-          ctx.fill();
+        ctx.putImageData(im, 0, 0);
+        if (T < 2.8) { ctx.fillStyle = 'rgba(205,190,175,' + (0.5 * fade) + ')'; ash.forEach(function (s) { var ax = s.x + T * s.v * 0.9, ay = s.y - T * s.v * 0.35 + Math.sin(T * 2 + s.o) * 8; ax = ((ax % (W + 40)) + W + 40) % (W + 40) - 20; ay = ((ay % (H + 40)) + H + 40) % (H + 40) - 20; ctx.fillRect(ax, ay, s.s, s.s); }); }
+        if (!revealed && T > 1.9) {
+          revealed = true; root.classList.add('pg');
+          Array.prototype.forEach.call(document.querySelectorAll('.hero .reveal'), function (el) { el.classList.add('in'); });
         }
-        /* click ripples */
-        for (k = ripples.length - 1; k >= 0; k--) { var rp = ripples[k], ra = (T - rp.t) / 0.45; if (ra >= 1) { ripples.splice(k, 1); continue; } ctx.strokeStyle = rp.c.replace(')', ',' + (0.7 * (1 - ra)).toFixed(2) + ')').replace('rgb', 'rgba'); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(rp.x, rp.y, 4 + 20 * ra, 0, 6.2832); ctx.stroke(); }
-        /* cursors */
-        for (k = 0; k < cs.length; k++) {
-          var cu = cs[k], pos = cursorAt(cu, T), vis = T > 0.15 ? 1 : 0, jx = Math.sin(T * 9 + k * 2) * 1.2, jy = Math.cos(T * 7 + k) * 1.2;
-          cu.el.style.opacity = vis; cu.el.style.transform = 'translate3d(' + (pos.x + jx).toFixed(1) + 'px,' + (pos.y + jy).toFixed(1) + 'px,0)';
-          var label = cu.name + ': ' + pos.lab; if (label !== cu.txt) { cu.txt = label; cu.tag.textContent = label; }
-          for (m = 0; m < cu.steps.length; m++) { var sd = cu.steps[m], endT = sd.t + sd.d; if (T >= endT && cu.last < m) { cu.last = m; var pe = pt(sd, 1); ripples.push({ x: pe.x, y: pe.y, t: T, c: k === 0 ? 'rgb(242,154,63)' : k === 1 ? 'rgb(79,216,255)' : 'rgb(110,231,160)' }); } }
-        }
-        if (T >= END) { finishBoot(); return; }
-        raf = requestAnimationFrame(frame);
+        if (T >= 3.1) { finishBoot(); return; }
+        rafId = requestAnimationFrame(frame);
       }
-      raf = requestAnimationFrame(frame);
+      rafId = requestAnimationFrame(frame);
     })();
   } else {
     if (bootEl && bootEl.parentNode) bootEl.parentNode.removeChild(bootEl);
