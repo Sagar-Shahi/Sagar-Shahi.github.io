@@ -587,6 +587,15 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
   .fx .chap-head .eyebrow.typed::before { content: "// "; }
 }
 
+
+/* ===== opening: the page is built from dust by cursors ===== */
+#forge { position: absolute; inset: 0; width: 100%; height: 100%; }
+#forge-cur { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.boot .boot-skip { position: absolute; left: 0; right: 0; bottom: 22px; text-align: center; }
+.fc { position: absolute; left: 0; top: 0; will-change: transform; }
+.fc svg { display: block; width: 18px; height: 18px; fill: var(--c); filter: drop-shadow(0 0 6px var(--c)); }
+.fc .tag { position: absolute; left: 15px; top: 17px; white-space: nowrap; padding: 2px 7px; border-radius: 3px; font: 500 11px/1.4 var(--font-mono); letter-spacing: 0.02em; color: #04060d; background: var(--c); }
+
 /* reticle cursor (fine pointers only) */
 .reticle { position: fixed; left: 0; top: 0; z-index: 90; width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 1px solid var(--hud); border-radius: 50%; pointer-events: none; opacity: 0; transition: opacity 0.3s, width 0.25s var(--ease), height 0.25s var(--ease), margin 0.25s var(--ease), border-color 0.25s; will-change: transform; }
 .reticle::before { content: ""; position: absolute; left: 50%; top: 50%; width: 4px; height: 4px; margin: -2px 0 0 -2px; border-radius: 50%; background: var(--hud); }
@@ -607,14 +616,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
 }
 </style>
 
-<div class="boot" id="boot" role="presentation">
-  <div class="boot-in">
-    <div class="reactor" aria-hidden="true"><i class="r1"></i><i class="r2"></i><i class="r3"></i></div>
-    <div class="boot-log mono" id="boot-log" aria-hidden="true"></div>
-    <div class="boot-bar" aria-hidden="true"><i id="boot-fill"></i></div>
-    <span class="boot-skip mono">Tap to skip</span>
-  </div>
-</div>
+<div class="boot" id="boot" role="presentation"><canvas id="forge" aria-hidden="true"></canvas><div id="forge-cur" aria-hidden="true"></div><span class="boot-skip mono">Tap to skip</span></div>
 <div class="fxbg" aria-hidden="true"></div>
 </head>
 <body>
@@ -936,25 +938,124 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
     if (bootEl) { bootEl.classList.add('out'); setTimeout(function () { root.classList.remove('booting'); if (bootEl.parentNode) bootEl.parentNode.removeChild(bootEl); }, 650); }
     afterBoot.forEach(function (f) { f(); }); afterBoot = [];
   }
-  if (bootEl && !RM && !booted) {
+  if (bootEl && !RM && !booted && document.getElementById('forge')) {
     root.classList.add('booting');
-    var lines = ['Initialising', 'Sagar Shahi online'];
-    var logEl = document.getElementById('boot-log'), fill = document.getElementById('boot-fill'), li = 0;
-    var t0 = performance.now(), total = 1100;
-    (function addLine() {
-      if (bootDone) return;
-      if (li < lines.length) {
-        var d = document.createElement('div'); d.textContent = lines[li]; if (li === lines.length - 1) d.className = 'ok';
-        logEl.appendChild(d); li++; setTimeout(addLine, total / lines.length * 0.9);
-      }
-    })();
-    (function prog(t) {
-      if (bootDone) return;
-      var k = Math.min((t - t0) / total, 1); fill.style.transform = 'scaleX(' + k + ')';
-      if (k < 1) requestAnimationFrame(prog); else setTimeout(finishBoot, 250);
-    })(t0);
     bootEl.addEventListener('click', finishBoot);
-    setTimeout(finishBoot, 2200);
+    setTimeout(finishBoot, 7500);
+    (function forge() {
+      var cv = document.getElementById('forge'), box = document.getElementById('forge-cur'), ctx = cv.getContext('2d');
+      var dpr = Math.min(window.devicePixelRatio || 1, 1.5), W = window.innerWidth, H = window.innerHeight, mob = W < 720;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      /* the page, drawn as simple blocks; each block is made by one cursor in a set time window */
+      var shapes = [], x0 = mob ? W * 0.06 : W * 0.1, ww = W - 2 * x0;
+      function R(c, t, d, x, y, w, hh, lab) { shapes.push({ k: 'r', c: c, t: t, d: d, x: x, y: y, w: w, h: hh, lab: lab }); }
+      function C(c, t, d, x, y, r, lab) { shapes.push({ k: 'c', c: c, t: t, d: d, x: x, y: y, r: r, lab: lab }); }
+      function Ln(c, t, d, x, y, w, lab) { shapes.push({ k: 'l', c: c, t: t, d: d, x: x, y: y, w: w, lab: lab }); }
+      if (!mob) {
+        R(0, 0.9, 0.7, x0, H * 0.06, ww, H * 0.06, 'drawing navigation');
+        Ln(0, 1.6, 0.25, x0 + 14, H * 0.09, ww * 0.1, 'adding logo'); Ln(0, 1.85, 0.3, x0 + ww * 0.62, H * 0.09, ww * 0.34, 'adding links');
+        R(1, 1.0, 0.55, x0, H * 0.2, ww * 0.4, H * 0.1, 'sketching hero'); R(1, 1.55, 0.45, x0, H * 0.33, ww * 0.3, H * 0.1, 'sketching hero');
+        Ln(1, 2.0, 0.25, x0, H * 0.48, ww * 0.46, 'writing intro'); Ln(1, 2.25, 0.25, x0, H * 0.51, ww * 0.4, 'writing intro'); Ln(1, 2.5, 0.25, x0, H * 0.54, ww * 0.3, 'writing intro');
+        R(0, 2.2, 0.35, x0, H * 0.61, ww * 0.13, H * 0.06, 'adding buttons'); R(0, 2.55, 0.35, x0 + ww * 0.15, H * 0.61, ww * 0.13, H * 0.06, 'adding buttons'); R(0, 2.9, 0.35, x0 + ww * 0.3, H * 0.61, ww * 0.13, H * 0.06, 'adding buttons');
+        C(2, 0.9, 1.1, x0 + ww * 0.79, H * 0.36, Math.min(W, H) * 0.16, 'placing portrait');
+        var cw = (ww - 2 * 18) / 3; R(2, 2.1, 0.5, x0, H * 0.74, cw, H * 0.2, 'researching projects'); R(2, 2.6, 0.5, x0 + cw + 18, H * 0.74, cw, H * 0.2, 'adding project cards'); R(2, 3.1, 0.5, x0 + 2 * (cw + 18), H * 0.74, cw, H * 0.2, 'adding skills');
+      } else {
+        R(0, 0.9, 0.6, x0, H * 0.05, ww, H * 0.06, 'drawing navigation');
+        C(2, 0.9, 1.0, x0 + ww * 0.82, H * 0.2, W * 0.13, 'placing portrait');
+        R(1, 1.0, 0.5, x0, H * 0.16, ww * 0.56, H * 0.05, 'sketching hero'); R(1, 1.5, 0.5, x0, H * 0.23, ww * 0.42, H * 0.05, 'sketching hero');
+        Ln(1, 2.0, 0.25, x0, H * 0.36, ww * 0.95, 'writing intro'); Ln(1, 2.25, 0.25, x0, H * 0.39, ww * 0.85, 'writing intro'); Ln(1, 2.5, 0.25, x0, H * 0.42, ww * 0.6, 'writing intro');
+        R(0, 1.7, 0.35, x0, H * 0.5, ww * 0.44, H * 0.05, 'adding buttons'); R(0, 2.1, 0.35, x0 + ww * 0.5, H * 0.5, ww * 0.44, H * 0.05, 'adding buttons');
+        R(2, 2.0, 0.55, x0, H * 0.6, ww, H * 0.14, 'researching projects'); R(2, 2.55, 0.55, x0, H * 0.78, ww, H * 0.14, 'adding project cards');
+      }
+      function pt(s, f) {            /* point at fraction f (0..1) along a shape's outline */
+        var u;
+        if (s.k === 'l') return { x: s.x + s.w * f, y: s.y };
+        if (s.k === 'c') { u = -Math.PI / 2 + f * 2 * Math.PI; return { x: s.x + Math.cos(u) * s.r, y: s.y + Math.sin(u) * s.r }; }
+        var per = 2 * (s.w + s.h), L = f * per;
+        if (L < s.w) return { x: s.x + L, y: s.y }; L -= s.w;
+        if (L < s.h) return { x: s.x + s.w, y: s.y + L }; L -= s.h;
+        if (L < s.w) return { x: s.x + s.w - L, y: s.y + s.h }; L -= s.w;
+        return { x: s.x, y: s.y + s.h - L };
+      }
+      function per(s) { return s.k === 'l' ? s.w : s.k === 'c' ? 2 * Math.PI * s.r : 2 * (s.w + s.h); }
+      /* dust: every shape gets particles that fly in as its cursor reaches them; the rest drift and fade */
+      var ps = [], i, j, s, n;
+      for (i = 0; i < shapes.length; i++) {
+        s = shapes[i]; n = Math.max(8, Math.min(mob ? 70 : 130, Math.round(per(s) / 8)));
+        for (j = 0; j < n; j++) { var f = j / n; ps.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, s: s, f: f, col: j % 7 === 0 ? 2 : 1, st: 0, fx: 0, fy: 0 }); }
+      }
+      var dust = mob ? 220 : 480;
+      for (i = 0; i < dust; i++) ps.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - 0.5) * 0.45, vy: (Math.random() - 0.5) * 0.45 - 0.05, s: null, col: 0 });
+      /* cursors */
+      var CUR = [{ n: 'Sagar', c: '#f29a3f' }, { n: 'SAGE', c: '#4fd8ff' }, { n: 'Django', c: '#6ee7a0' }], cs = [];
+      CUR.forEach(function (cu, k) {
+        var el = document.createElement('div'); el.className = 'fc'; el.style.setProperty('--c', cu.c); el.style.opacity = 0;
+        el.innerHTML = '<svg viewBox="0 0 24 24"><path d="M3 2l17 9-7.5 2L9 21z"/></svg><span class="tag"></span>';
+        box.appendChild(el);
+        var st = shapes.filter(function (q) { return q.c === k; }).sort(function (a, b) { return a.t - b.t; });
+        cs.push({ el: el, tag: el.lastChild, name: cu.n, steps: st, txt: '', sx: k === 0 ? -40 : k === 1 ? W * 0.5 : W + 40, sy: k === 1 ? -40 : H * (0.3 + k * 0.15), ripAt: -1, last: -1 });
+      });
+      var ripples = [], t0 = performance.now(), END = 4.1, raf = 0;
+      function ease(x) { return x < 0 ? 0 : x > 1 ? 1 : 1 - Math.pow(1 - x, 3); }
+      function smooth(x) { return x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x); }
+      function cursorAt(c, T) {
+        var st = c.steps, k, a, b, p, q;
+        for (k = 0; k < st.length; k++) {
+          a = st[k];
+          if (T >= a.t && T <= a.t + a.d) { p = pt(a, (T - a.t) / a.d); return { x: p.x, y: p.y, lab: a.lab }; }
+          if (T < a.t) {
+            var from = k === 0 ? { x: c.sx, y: c.sy, t: 0.15 } : (function () { var pv = st[k - 1], e = pt(pv, 1); return { x: e.x, y: e.y, t: pv.t + pv.d }; })();
+            q = pt(a, 0); var u = smooth((T - from.t) / Math.max(0.15, a.t - from.t));
+            return { x: from.x + (q.x - from.x) * u, y: from.y + (q.y - from.y) * u, lab: k === 0 && T < a.t - 0.3 ? 'researching…' : 'researching…' };
+          }
+        }
+        var lastS = st[st.length - 1], e2 = pt(lastS, 1); return { x: e2.x, y: e2.y, lab: 'done' };
+      }
+      function frame(now) {
+        raf = 0; if (bootDone) return;
+        var T = (now - t0) / 1000, k, m, pp, s2, u2, col;
+        ctx.clearRect(0, 0, W, H);
+        /* outlines draw behind their cursor and fill softly once complete */
+        for (k = 0; k < shapes.length; k++) {
+          s2 = shapes[k]; u2 = (T - s2.t - 0.2) / s2.d; if (u2 <= 0) continue; if (u2 > 1) u2 = 1;
+          var flash = T > 3.5 ? Math.min(1, (T - 3.5) / 0.4) : 0;
+          ctx.strokeStyle = 'rgba(79,216,255,' + (0.35 + 0.5 * flash).toFixed(2) + ')'; ctx.lineWidth = 1; ctx.beginPath();
+          var steps = s2.k === 'l' ? 2 : 48; for (m = 0; m <= steps; m++) { var q2 = pt(s2, u2 * m / steps); if (m === 0) ctx.moveTo(q2.x, q2.y); else ctx.lineTo(q2.x, q2.y); }
+          if (u2 >= 1 && s2.k !== 'l') ctx.closePath(); ctx.stroke();
+          if (u2 >= 1 && s2.k !== 'l') { var fa = Math.min(1, (T - s2.t - s2.d - 0.2) / 0.5) * (0.06 + 0.07 * flash); if (fa > 0) { ctx.fillStyle = 'rgba(79,216,255,' + fa.toFixed(3) + ')'; if (s2.k === 'r') ctx.fillRect(s2.x, s2.y, s2.w, s2.h); else { ctx.beginPath(); ctx.arc(s2.x, s2.y, s2.r, 0, 6.2832); ctx.fill(); } } }
+        }
+        /* particles */
+        var dustA = T < 2.8 ? 0.4 : Math.max(0, 0.4 * (1 - (T - 2.8) / 0.9)), colors = ['rgba(140,200,255,' + dustA.toFixed(2) + ')', 'rgba(79,216,255,0.95)', 'rgba(242,154,63,0.95)'], pass;
+        for (pass = 0; pass < 3; pass++) {
+          ctx.fillStyle = colors[pass]; ctx.beginPath();
+          for (k = 0; k < ps.length; k++) {
+            pp = ps[k]; if (pp.col !== pass) continue;
+            if (pp.s) {
+              var go = pp.s.t + pp.f * pp.s.d;
+              if (T >= go) {
+                if (!pp.st) { pp.st = 1; pp.fx = pp.x; pp.fy = pp.y; }
+                var tg = pt(pp.s, pp.f), e = ease((T - go) / 0.55); pp.x = pp.fx + (tg.x - pp.fx) * e; pp.y = pp.fy + (tg.y - pp.fy) * e;
+              } else { pp.x += pp.vx; pp.y += pp.vy; if (pp.x < 0 || pp.x > W) pp.vx *= -1; if (pp.y < 0 || pp.y > H) pp.vy *= -1; }
+            } else { pp.x += pp.vx; pp.y += pp.vy; if (pp.x < 0) pp.x = W; if (pp.x > W) pp.x = 0; if (pp.y < 0) pp.y = H; if (pp.y > H) pp.y = 0; }
+            if (dustA <= 0 && !pp.s) continue;
+            ctx.rect(pp.x - 1, pp.y - 1, pass === 0 ? 1.6 : 2.2, pass === 0 ? 1.6 : 2.2);
+          }
+          ctx.fill();
+        }
+        /* click ripples */
+        for (k = ripples.length - 1; k >= 0; k--) { var rp = ripples[k], ra = (T - rp.t) / 0.45; if (ra >= 1) { ripples.splice(k, 1); continue; } ctx.strokeStyle = rp.c.replace(')', ',' + (0.7 * (1 - ra)).toFixed(2) + ')').replace('rgb', 'rgba'); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(rp.x, rp.y, 4 + 20 * ra, 0, 6.2832); ctx.stroke(); }
+        /* cursors */
+        for (k = 0; k < cs.length; k++) {
+          var cu = cs[k], pos = cursorAt(cu, T), vis = T > 0.15 ? 1 : 0, jx = Math.sin(T * 9 + k * 2) * 1.2, jy = Math.cos(T * 7 + k) * 1.2;
+          cu.el.style.opacity = vis; cu.el.style.transform = 'translate3d(' + (pos.x + jx).toFixed(1) + 'px,' + (pos.y + jy).toFixed(1) + 'px,0)';
+          var label = cu.name + ': ' + pos.lab; if (label !== cu.txt) { cu.txt = label; cu.tag.textContent = label; }
+          for (m = 0; m < cu.steps.length; m++) { var sd = cu.steps[m], endT = sd.t + sd.d; if (T >= endT && cu.last < m) { cu.last = m; var pe = pt(sd, 1); ripples.push({ x: pe.x, y: pe.y, t: T, c: k === 0 ? 'rgb(242,154,63)' : k === 1 ? 'rgb(79,216,255)' : 'rgb(110,231,160)' }); } }
+        }
+        if (T >= END) { finishBoot(); return; }
+        raf = requestAnimationFrame(frame);
+      }
+      raf = requestAnimationFrame(frame);
+    })();
   } else {
     if (bootEl && bootEl.parentNode) bootEl.parentNode.removeChild(bootEl);
     bootDone = true;
