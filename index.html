@@ -81,16 +81,16 @@ html.xc, html.xc * { cursor: none !important; }
 html.xc input, html.xc textarea { cursor: text !important; }
 #cur-glow, #cur-trail, #cur-ring, #cur-dot { position: fixed; left: 0; top: 0; pointer-events: none; opacity: 0; transition: opacity 0.3s; }
 html.xc.curon #cur-glow, html.xc.curon #cur-trail, html.xc.curon #cur-ring, html.xc.curon #cur-dot { opacity: 1; }
-#cur-glow { z-index: 0; width: 520px; height: 520px; margin: -260px 0 0 -260px; background: radial-gradient(closest-side, rgba(120,90,255,0.13), rgba(80,210,255,0.05) 55%, transparent); mix-blend-mode: screen; }
+#cur-glow { z-index: 0; width: 300px; height: 300px; margin: -150px 0 0 -150px; background: radial-gradient(closest-side, rgba(120,90,255,0.13), rgba(80,210,255,0.05) 55%, transparent); mix-blend-mode: screen; }
 #cur-trail { z-index: 79; width: 100%; height: 100%; }
-#cur-ring { z-index: 80; width: 38px; height: 38px; margin: -19px 0 0 -19px; border: 1.5px solid rgba(90,225,255,0.8); border-radius: 50%; display: grid; place-items: center; transition: width 0.28s var(--ease), height 0.28s var(--ease), margin 0.28s var(--ease), background 0.28s, border-color 0.28s, opacity 0.3s; box-shadow: 0 0 18px rgba(90,225,255,0.25); }
-#cur-ring span { font: 600 10px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: #05060d; opacity: 0; transition: opacity 0.2s; }
-#cur-ring.hov { width: 74px; height: 74px; margin: -37px 0 0 -37px; background: rgba(90,225,255,0.92); border-color: transparent; }
+#cur-ring { z-index: 80; width: 22px; height: 22px; margin: -11px 0 0 -11px; border: 1px solid rgba(90,225,255,0.8); border-radius: 50%; display: grid; place-items: center; transition: width 0.28s var(--ease), height 0.28s var(--ease), margin 0.28s var(--ease), background 0.28s, border-color 0.28s, opacity 0.3s; box-shadow: 0 0 18px rgba(90,225,255,0.25); }
+#cur-ring span { font: 600 8px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: #05060d; opacity: 0; transition: opacity 0.2s; }
+#cur-ring.hov { width: 46px; height: 46px; margin: -23px 0 0 -23px; background: rgba(90,225,255,0.92); border-color: transparent; }
 #cur-ring.hov span { opacity: 1; }
 html.xc.curon #cur-ring.hov ~ #cur-dot { opacity: 0; }
-#cur-ring.down { width: 26px; height: 26px; margin: -13px 0 0 -13px; background: rgba(165,110,255,0.35); }
+#cur-ring.down { width: 14px; height: 14px; margin: -7px 0 0 -7px; background: rgba(165,110,255,0.35); }
 #cur-ring.txt { opacity: 0 !important; }
-#cur-dot { z-index: 81; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px #5ae1ff, 0 0 20px #a56eff; }
+#cur-dot { z-index: 81; width: 4px; height: 4px; margin: -2px 0 0 -2px; border-radius: 50%; background: #fff; box-shadow: 0 0 6px #5ae1ff, 0 0 12px #a56eff; }
 #dust { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 60; pointer-events: none; }
 #rain { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.55; }
 .fxbg .mist { position: absolute; inset: 0; background: radial-gradient(60vmax 40vmax at 15% 10%, rgba(150,80,255,0.16), transparent 70%), radial-gradient(55vmax 40vmax at 90% 80%, rgba(60,210,255,0.11), transparent 70%), radial-gradient(90vmax 70vmax at 50% 50%, transparent 40%, rgba(5,6,13,0.85) 100%); animation: mist 16s ease-in-out infinite alternate; }
@@ -1183,10 +1183,10 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
       dot.style.transform = 'translate3d(' + mx + 'px,' + my + 'px,0)';
       ring.style.transform = 'translate3d(' + rx + 'px,' + ry + 'px,0)';
       glow.style.transform = 'translate3d(' + gx + 'px,' + gy + 'px,0)';
-      pts.push({ x: rx, y: ry, t: 1 }); if (pts.length > 26) pts.shift();
+      pts.push({ x: rx, y: ry, t: 1 }); if (pts.length > 18) pts.shift();
       tx.clearRect(0, 0, W, H);
       for (var i = 1; i < pts.length; i++) {
-        var a = i / pts.length; tx.strokeStyle = 'rgba(' + (120 + 90 * (1 - a) | 0) + ',' + (200 - 80 * (1 - a) | 0) + ',255,' + (a * 0.55) + ')'; tx.lineWidth = a * 4; tx.lineCap = 'round';
+        var a = i / pts.length; tx.strokeStyle = 'rgba(' + (120 + 90 * (1 - a) | 0) + ',' + (200 - 80 * (1 - a) | 0) + ',255,' + (a * 0.55) + ')'; tx.lineWidth = a * 2; tx.lineCap = 'round';
         tx.beginPath(); tx.moveTo(pts[i - 1].x, pts[i - 1].y); tx.lineTo(pts[i].x, pts[i].y); tx.stroke();
       }
       requestAnimationFrame(loop);
