@@ -107,7 +107,7 @@ html.xc.curon #cur-ring.hov ~ #cur-dot { opacity: 0; }
 .nav .brand { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.02em; text-decoration: none; font-size: 1.1rem; }
 .nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 4px 20px; overflow-x: auto; scrollbar-width: none; min-width: 0; max-width: 100%; }
 .nav ul::-webkit-scrollbar { display: none; }
-.nav a.link { font-family: var(--font-mono); font-size: 13px; text-decoration: none; padding: 6px 0; color: var(--muted); display: inline-block; white-space: nowrap; }
+.nav a.link { font-family: var(--font-mono); font-size: 13px; text-decoration: none; padding: 10px 0; color: var(--muted); display: inline-block; white-space: nowrap; }
 .nav a.link:hover, .nav a.link.active { color: var(--fg); }
 .nav a.link.active { box-shadow: inset 0 -2px 0 var(--accent); }
 .progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--accent); transform-origin: left; transform: scaleX(0); }
@@ -238,7 +238,9 @@ h3.sub { font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; 
 .contact { display: flex; flex-direction: column; gap: 26px; padding: clamp(28px, 6vw, 56px) 0; border-top: 1px solid var(--rule); }
 .bigmail { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.35rem, 6.4vw, 3.4rem); letter-spacing: -0.03em; line-height: 1.1; overflow-wrap: anywhere; text-decoration: none; align-self: flex-start; background: linear-gradient(var(--accent), var(--accent)) no-repeat left bottom / 0 3px; padding-bottom: 6px; transition: background-size 0.5s var(--ease), color 0.25s; }
 .bigmail:hover { background-size: 100% 3px; color: var(--fg); }
-.links { display: flex; flex-wrap: wrap; gap: 10px 26px; font-family: var(--font-mono); font-size: 13px; }
+.links { display: flex; flex-wrap: wrap; gap: 4px 26px; font-family: var(--font-mono); font-size: 13px; }
+.links a, footer a { display: inline-block; padding: 8px 0; }
+@media (max-width: 560px) { .nav ul { flex-wrap: wrap; overflow-x: visible; gap: 0 16px; } }
 .links a { text-decoration: none; border-bottom: 1px solid var(--card-b); padding-bottom: 2px; }
 .links a:hover { border-color: var(--accent); }
 
@@ -657,6 +659,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
     </ul>
     <div class="progress" id="progress" aria-hidden="true"></div>
   </nav>
+  <main id="main">
 
   <header class="hero" id="top">
     <div class="hero-bg" aria-hidden="true"><canvas class="net" id="net"></canvas>
@@ -942,6 +945,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
     </div>
   </section>
 
+  </main>
   <footer class="mono">
     <span>&copy; 2026 Sagar Shahi</span>
     
@@ -1472,6 +1476,14 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
         a: function () { return { t: "Sagar Shahi is a computer engineering student and developer in Kathmandu. He builds software and web applications with Python, Django, Java and C++, and he is open to internships, jobs and freelance work.", ch: ['Show projects', 'What are his skills?', 'Contact'] }; } },
       { w: 2, k: ['skill', 'skills', 'tech', 'stack', 'tools', 'technology', 'technologies', 'python', 'django', 'java', 'c++', 'css', 'rest', 'api', 'drf', 'know', 'good at'],
         a: function () { return { t: "Backend: Python, Django, Django REST Framework, Java, C++, CRUD design and REST APIs. Security and tooling: Argon2 password hashing, rate limiting, Git and GitHub, GitHub Actions, bandit, pip-audit and automated testing. Web: web development and CSS. He is also studying DBMS, COA and operating systems.", go: 'skills', ch: ['Show projects', 'Education'] }; } },
+      { w: 3, k: ['linkpulse', 'link', 'links', 'tracker', 'shortener', 'utm', 'analytics'],
+        a: function () { return { t: "LinkPulse is Sagar's campaign link tracker. It makes tagged short links with UTM values, shows clicks, unique visitors, referrers and devices for 7, 30 or 90 days, leaves bots out, and stores no IP address. It has a REST API with API keys, a CSV export and 189 automated tests.", go: 'work', links: [['LinkPulse on GitHub', SITE.repo2]], ch: ['Show projects', 'Contact'] }; } },
+      { w: 8, k: ['stripe', 'payment', 'payments', 'checkout', 'pay', 'shop', 'store'],
+        a: function () { return { t: "Fitness Hub has a plan shop with a cart, orders and a My plans page, but the checkout is a demo. No payment provider such as Stripe is connected, so no money is taken. A real provider is the next step.", go: 'work', links: [['Fitness Hub on GitHub', SITE.repo]], ch: ['Show projects', 'Contact'] }; } },
+      { w: 3, k: ['test', 'tests', 'testing', 'tested', 'coverage', 'quality'],
+        a: function () { return { t: "Both projects have automated tests: 158 for Fitness Hub and 189 for LinkPulse, 347 in total. GitHub Actions runs them on every change, and LinkPulse also runs bandit and pip-audit security scans.", go: 'work', ch: ['Show projects', 'Contact'] }; } },
+      { w: 3, k: ['react', 'angular', 'vue', 'node', 'nodejs', 'php', 'laravel', 'typescript', 'aws', 'docker', 'kubernetes', 'flask', 'fastapi', 'swift', 'kotlin'],
+        a: function () { return { t: "That is not listed on this page. Sagar's listed skills are Python, Django, Django REST Framework, Java, C++, CSS and web development. If you need something else, email him and ask.", go: 'skills', ch: ['What are his skills?', 'Contact'] }; } },
       { w: 2, k: ['project', 'projects', 'fitness', 'hub', 'built', 'build', 'made', 'portfolio', 'repo', 'repository', 'github', 'code'],
         a: function () { return { t: "Sagar built two Django projects on his own. Fitness Hub is a fitness tracker with a plan shop and a demo checkout. LinkPulse is a campaign link tracker with click analytics and privacy by design. Both have a REST API with API keys and automated tests (158 and 189). The code is on GitHub.", go: 'work', links: [['Fitness Hub on GitHub', SITE.repo], ['LinkPulse on GitHub', SITE.repo2]], ch: ['What are his skills?', 'Contact'] }; } },
       { w: 2, k: ['education', 'study', 'studying', 'college', 'school', 'university', 'student', 'shivapuri', 'degree', 'course', 'dbms', 'coa', 'engineering', 'learn', 'learning'],
@@ -1491,7 +1503,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
       { w: 2, k: ['cv', 'resume'],
         a: function () { return { t: "Yes, there is a one-page CV in PDF. It covers his profile, the Fitness Hub and LinkPulse projects, OJT, education, skills and languages.", links: [['Download CV', SITE.cv], ['Email Sagar', 'mailto:' + EMAIL]], ch: [] }; } },
       { w: 2, k: ['service', 'services', 'offer', 'offers', 'help', 'do you do', 'can he do', 'what can'],
-        a: function () { return { t: "He builds Django web apps with accounts and permissions, dashboards and tracking pages, stores with carts and checkout, and automated test checks with GitHub Actions.", go: 'services', ch: ['Show projects', 'Contact'] }; } },
+        a: function () { return { t: "He builds Django web apps with accounts and permissions, dashboards and tracking pages, REST APIs with API keys, and automated test checks with GitHub Actions.", go: 'services', ch: ['Show projects', 'Contact'] }; } },
       { w: 1, k: ['thanks', 'thank', 'cool', 'nice', 'great', 'awesome', 'good'], a: function () { return { t: "You are welcome. Ask me anything else about Sagar.", ch: CH.slice(0, 3) }; } }
     ];
 
