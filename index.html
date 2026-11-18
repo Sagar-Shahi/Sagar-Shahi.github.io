@@ -679,7 +679,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
     </div>
     <div class="stats">
       <div class="stat"><b class="accent num" data-to="2">2</b><span class="label">Django projects built</span></div>
-      <div class="stat"><b class="accent num" data-to="359">359</b><span class="label">Automated tests written</span></div>
+      <div class="stat"><b class="accent num" data-to="415">415</b><span class="label">Automated tests written</span></div>
     </div>
   </header>
 
@@ -759,6 +759,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
         </button>
         <a class="proj-gh mono" href="https://github.com/Sagar-Shahi/linkpulse" target="_blank" rel="noopener noreferrer" aria-label="LinkPulse source code on GitHub (opens in a new tab)"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.5 7.5 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg> View source on GitHub <span aria-hidden="true">&nearr;</span></a>
         <a class="proj-gh proj-live mono" href="https://linkpulse-xy0s.onrender.com" target="_blank" rel="noopener noreferrer" aria-label="LinkPulse live demo (opens in a new tab)">Live demo <span aria-hidden="true">&nearr;</span></a>
+        <a class="proj-gh proj-live mono" href="https://linkpulse-xy0s.onrender.com/demo/" target="_blank" rel="noopener noreferrer" aria-label="LinkPulse sample report, no sign-up needed (opens in a new tab)">Sample report <span aria-hidden="true">&nearr;</span></a>
         <div class="panel" id="p2"><div class="panel-in">
           <div class="detail">
             <div class="col">
@@ -769,12 +770,14 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
                   <li>UTM tagging done for you, with values cleaned up automatically</li>
                   <li>Analytics for 7, 30 and 90 days: clicks, unique visitors, referrers, devices and campaigns, with bots left out</li>
                   <li>Privacy by design: no IP address or user agent is stored</li>
-                  <li>REST API with API keys, and a CSV export of links and click counts</li>
+                  <li>Campaign intelligence: campaigns ranked and compared with the previous period, labelled growing or falling, plus links that are losing clicks</li>
+                  <li>A QR code for every link, drawn on the server, and a destination check protected against server-side request forgery</li>
+                  <li>REST API with API keys, CSV exports, and a public sample report so anyone can try it without signing up</li>
                 </ul>
               </div>
               <div>
                 <h4>Built with care</h4>
-                <p>Strict security headers with no inline scripts, Argon2 passwords, login lockout and rate limits, and checks on every destination URL. 197 automated tests, and a GitHub Actions workflow that also runs bandit and pip-audit.</p>
+                <p>Strict security headers with no inline scripts, Argon2 passwords, login lockout and rate limits, and checks on every destination URL. 253 automated tests, and a GitHub Actions workflow that also runs bandit and pip-audit.</p>
               </div>
             </div>
             <div class="col">
@@ -1480,15 +1483,15 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
       { w: 2, k: ['skill', 'skills', 'tech', 'stack', 'tools', 'technology', 'technologies', 'python', 'django', 'java', 'c++', 'css', 'rest', 'api', 'drf', 'know', 'good at'],
         a: function () { return { t: "Backend: Python, Django, Django REST Framework, Java, C++, CRUD design and REST APIs. Security and tooling: Argon2 password hashing, rate limiting, Git and GitHub, GitHub Actions, bandit, pip-audit and automated testing. Web: web development and CSS. He is also studying DBMS, COA and operating systems.", go: 'skills', ch: ['Show projects', 'Education'] }; } },
       { w: 3, k: ['linkpulse', 'link', 'links', 'tracker', 'shortener', 'utm', 'analytics'],
-        a: function () { return { t: "LinkPulse is Sagar's campaign link tracker. It makes tagged short links with UTM values, shows clicks, unique visitors, referrers and devices for 7, 30 or 90 days, leaves bots out, and stores no IP address. It has a REST API with API keys, a CSV export and 197 automated tests.", go: 'work', links: [['LinkPulse on GitHub', SITE.repo2]], ch: ['Show projects', 'Contact'] }; } },
+        a: function () { return { t: "LinkPulse is Sagar's campaign link tracker. It makes tagged short links with UTM values, shows clicks, unique visitors, referrers and devices for 7, 30 or 90 days, leaves bots out, and stores no IP address. It also ranks and compares campaigns against the previous period, makes QR codes, checks if a destination still works, and has a REST API with API keys, CSV exports, a public sample report and 253 automated tests.", go: 'work', links: [['LinkPulse on GitHub', SITE.repo2]], ch: ['Show projects', 'Contact'] }; } },
       { w: 8, k: ['stripe', 'payment', 'payments', 'checkout', 'pay', 'shop', 'store'],
         a: function () { return { t: "Fitness Hub has a plan shop with a cart, orders and a My plans page, but the checkout is a demo. No payment provider such as Stripe is connected, so no money is taken. A real provider is the next step.", go: 'work', links: [['Fitness Hub on GitHub', SITE.repo]], ch: ['Show projects', 'Contact'] }; } },
       { w: 3, k: ['test', 'tests', 'testing', 'tested', 'coverage', 'quality'],
-        a: function () { return { t: "Both projects have automated tests: 162 for Fitness Hub and 197 for LinkPulse, 359 in total. GitHub Actions runs them on every change, and LinkPulse also runs bandit and pip-audit security scans.", go: 'work', ch: ['Show projects', 'Contact'] }; } },
+        a: function () { return { t: "Both projects have automated tests: 162 for Fitness Hub and 253 for LinkPulse, 415 in total. GitHub Actions runs them on every change, and LinkPulse also runs bandit and pip-audit security scans.", go: 'work', ch: ['Show projects', 'Contact'] }; } },
       { w: 3, k: ['react', 'angular', 'vue', 'node', 'nodejs', 'php', 'laravel', 'typescript', 'aws', 'docker', 'kubernetes', 'flask', 'fastapi', 'swift', 'kotlin'],
         a: function () { return { t: "That is not listed on this page. Sagar's listed skills are Python, Django, Django REST Framework, Java, C++, CSS and web development. If you need something else, email him and ask.", go: 'skills', ch: ['What are his skills?', 'Contact'] }; } },
       { w: 2, k: ['project', 'projects', 'fitness', 'hub', 'built', 'build', 'made', 'portfolio', 'repo', 'repository', 'github', 'code'],
-        a: function () { return { t: "Sagar built two Django projects on his own. Fitness Hub is a fitness tracker with a plan shop and a demo checkout. LinkPulse is a campaign link tracker with click analytics and privacy by design. Both have a REST API with API keys and automated tests (162 and 197). The code is on GitHub.", go: 'work', links: [['Fitness Hub on GitHub', SITE.repo], ['LinkPulse on GitHub', SITE.repo2]], ch: ['What are his skills?', 'Contact'] }; } },
+        a: function () { return { t: "Sagar built two Django projects on his own. Fitness Hub is a fitness tracker with a plan shop and a demo checkout. LinkPulse is a campaign link tracker with click analytics and privacy by design. Both have a REST API with API keys and automated tests (162 and 253). The code is on GitHub.", go: 'work', links: [['Fitness Hub on GitHub', SITE.repo], ['LinkPulse on GitHub', SITE.repo2]], ch: ['What are his skills?', 'Contact'] }; } },
       { w: 2, k: ['education', 'study', 'studying', 'college', 'school', 'university', 'student', 'shivapuri', 'degree', 'course', 'dbms', 'coa', 'engineering', 'learn', 'learning'],
         a: function () { return { t: "Sagar studies computer engineering and attended Shivapuri Secondary College in Maharajgunj, Kathmandu. He is currently studying DBMS, COA, operating systems, Java, C++ and web development.", go: 'journey', ch: ['OJT', 'Show projects'] }; } },
       { w: 2, k: ['ojt', 'training', 'on-the-job', 'experience', 'intern', 'history', 'background'],
