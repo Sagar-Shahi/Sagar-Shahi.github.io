@@ -168,6 +168,8 @@ h3.sub { font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; 
 
 /* accordion (projects + faq) */
 .acc-btn { width: 100%; text-align: left; background: none; border: 0; cursor: pointer; padding: 0; }
+.proj-gh { display: inline-flex; align-items: center; gap: 8px; margin: 2px 0 14px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; font-size: 12.5px; text-decoration: none; color: var(--ink); transition: border-color 0.2s, color 0.2s, background 0.2s; }
+.proj-gh:hover, .proj-gh:focus-visible { border-color: var(--accent); color: var(--accent); background: rgba(242, 154, 63, 0.08); }
 .panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.5s var(--ease); }
 .panel-in { overflow: hidden; min-height: 0; visibility: hidden; transition: visibility 0s linear 0.5s; }
 .acc.open > .panel { grid-template-rows: 1fr; }
@@ -647,6 +649,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
       <li><a class="link" href="#journey">Journey</a></li>
       <li><a class="link" href="#skills">Skills</a></li>
       <li><a class="link" href="#faq">FAQ</a></li>
+      <li><a class="link" href="https://github.com/Sagar-Shahi" target="_blank" rel="noopener noreferrer">GitHub &nearr;</a></li>
       <li><a class="link" href="#contact">Contact</a></li>
       
     </ul>
@@ -669,6 +672,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
     <div class="cta">
       <a class="btn primary" href="#work">View my work <span class="arr" aria-hidden="true">&rarr;</span></a>
       <a class="btn ghost" href="#contact">Get in touch <span class="arr" aria-hidden="true">&rarr;</span></a>
+      <a class="btn ghost" href="https://github.com/Sagar-Shahi" target="_blank" rel="noopener noreferrer">GitHub <span class="arr" aria-hidden="true">&nearr;</span></a>
       <a class="btn ghost" href="Sagar-Shahi-CV.pdf" download>Download CV <span class="arr" aria-hidden="true">&darr;</span></a>
     </div>
     <div class="stats">
@@ -708,6 +712,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
           <span class="desc">A private fitness tracker with a plan shop, built with Django 5.2 and Django REST Framework: workouts, meals, weight, a dashboard and a REST API.</span>
           <span class="side"><span class="role">Solo &middot; OJT project</span><span class="plus" aria-hidden="true">+</span></span>
         </button>
+        <a class="proj-gh mono" href="https://github.com/Sagar-Shahi/fitness-hub" target="_blank" rel="noopener noreferrer" aria-label="Fitness Hub source code on GitHub (opens in a new tab)"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.5 7.5 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg> View source on GitHub <span aria-hidden="true">&nearr;</span></a>
         <div class="panel" id="p1"><div class="panel-in">
           <div class="detail">
             <div class="col">
@@ -749,6 +754,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
           <span class="desc">Campaign link tracking for marketers: tagged short links, click analytics and a REST API, built with Django 5.2 and Django REST Framework with privacy and security as design constraints.</span>
           <span class="side"><span class="role">Solo project</span><span class="plus" aria-hidden="true">+</span></span>
         </button>
+        <a class="proj-gh mono" href="https://github.com/Sagar-Shahi/linkpulse" target="_blank" rel="noopener noreferrer" aria-label="LinkPulse source code on GitHub (opens in a new tab)"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.5 7.5 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg> View source on GitHub <span aria-hidden="true">&nearr;</span></a>
         <div class="panel" id="p2"><div class="panel-in">
           <div class="detail">
             <div class="col">
@@ -1306,7 +1312,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
   /* scroll: progress bar, nav highlight, timeline fill */
   var hudPct = document.getElementById('hud-pct'), totop = document.getElementById('totop'), bar = document.getElementById('progress'), tl = document.getElementById('tl'), items = tl ? tl.querySelectorAll('.tl-item') : [];
   var links = document.querySelectorAll('.nav a.link'), secs = [];
-  links.forEach(function (a) { var s = document.querySelector(a.getAttribute('href')); if (s) secs.push({ a: a, s: s }); });
+  links.forEach(function (a) { var h = a.getAttribute('href'); var s = h.charAt(0) === '#' ? document.querySelector(h) : null; if (s) secs.push({ a: a, s: s }); });
   var sq = false, hudSec = document.getElementById('hud-sec'), hudRead = document.getElementById('hud-read'), lastSec = 'home', orbEl = document.querySelector('.orb');
   var SECT = { home: 'S00 HOME', work: 'S01 WORK', services: 'S02 SERVICES', journey: 'S03 JOURNEY', skills: 'S04 SKILLS', faq: 'S05 FAQ', contact: 'S06 CONTACT' };
   function onScroll() {
